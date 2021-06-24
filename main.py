@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import os
-#from gtfparse import read_gtf
+from gtfparse import read_gtf
 from subprocess import call
 
     # shell=True is so you can handle redirects like in the 3rd command
@@ -138,7 +138,7 @@ def to_gtf(dataframe, filepath):
     # This removes the CSV that was made earlier, since it's only necessary to write the GTF. If you want to keep the
     # CSV, feel free to disable/delete this line.
     print('Removing CSV')
-    os.remove('%s.csv' % filepath)
+    #os.remove('%s.csv' % filepath)
     print('CSV Removed')
 
 
@@ -194,7 +194,7 @@ def isolate_ig(dataframe, chromosome_list=['2', '14', '22'], component_list=['IG
 pd.set_option('display.max_columns', 30)
 # pd.set_option('display.width', 2000)
 
-Homo_Sapiens_38 = open("/Users/bodinet/Downloads/Mus_musculus.GRCm38.98.gtf", 'r')
+Homo_Sapiens_38 = open("/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf", 'r')
 print('GTF opened, converting to dataframe')
 df = read_gtf(Homo_Sapiens_38)
 print('Conversion successful')
@@ -212,3 +212,4 @@ chromosomelist = ['2', '14', '22']
 rlist = ['IG_V', 'IG_C']
 
 igs_isolated = isolate_ig(humandf, chromosomelist, rlist)
+
