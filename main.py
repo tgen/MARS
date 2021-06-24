@@ -5,7 +5,7 @@ from gtfparse import read_gtf
 from subprocess import call
 
     # shell=True is so you can handle redirects like in the 3rd command
-    call("echo('It works')", shell=True)
+call("echo('It works')", shell=True)
 exit
 
 # ------------------------------------------------------------------------------------------------------------------- #
