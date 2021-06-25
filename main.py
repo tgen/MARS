@@ -10,28 +10,31 @@ from scipy import stats
 
 # shell=True is so you can handle redirects
 call("echo 'Running'", shell=True)
-# quit()
+ #quit()
 
 # Argument parser to facilitate calling from the command line
 
-parser = argparse.ArgumentParser(description='Assemble DLE fastqs and call myeloma Ig translocation calls.')
+parser = argparse.ArgumentParser(description='Check purity of multiple myeloma tumor samples.')
 parser.add_argument('-i', '--input_bam',
                     required=True,
-                    metavar='File.bam',
-                    dest="input_file",
-                    help='Merged bam of all regional contigs from DLE')
+                    help='BAM file for tumor sample')
 parser.add_argument('-g', '--input_gtf',
-                    help='Specimen Name, must match the bam')
+                    help='GTF to be used in processing')
 parser.add_argument('-o', '--output_path',
                     required=True,
-                    metavar='File.tsv',
                     help='Output path')
+parser.add_argument('-b', '--build_files',
+                    help='Type Y if you want to build the GTF, leave blank otherwise')
 
 args = parser.parse_args()
 
+out_path = args.output_path
+in_gtf = args.input_gtf
+in_bam = args.input_bam
+build = args.build_files
 
-
-
+quit()
+exit()
 
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
@@ -316,20 +319,21 @@ def interpret_featurecounts(filepath, samplename):
     Total_IGL = reads[reads['Geneid'].str.contains('LAMBDA_Locus')].reset_index().at[0, 'Count']
 
     # Generate several metrics used in later calculations using simple arithmetic on variables already produced.
-    Total_IG = Total_IGH + Total_IGK + Total_IGL
     global Total_IG
-    Percent_IG = Total_IG / Featurecount_Total
+    Total_IG = Total_IGH + Total_IGK + Total_IGL
     global Percent_IG
-    Total_Light_Chain = Total_IGK + Total_IGL
+    Percent_IG = Total_IG / Featurecount_Total
     global Total_Light_Chain
-    Total_Light_Variable = Total_IGKV_Reads + Total_IGLV_Reads
+    Total_Light_Chain = Total_IGK + Total_IGL
     global Total_Light_Variable
-    Total_Light_Constant = Total_IGKC_Reads + Total_IGLC_Reads
+    Total_Light_Variable = Total_IGKV_Reads + Total_IGLV_Reads
     global Total_Light_Constant
-    Percent_Kappa = Total_IGK / Total_Light_Chain
+    Total_Light_Constant = Total_IGKC_Reads + Total_IGLC_Reads
     global Percent_Kappa
-    Percent_Lambda = Total_IGL / Total_Light_Chain
+    Percent_Kappa = Total_IGK / Total_Light_Chain
     global Percent_Lambda
+    Percent_Lambda = Total_IGL / Total_Light_Chain
+
 
     #####################################
     # About here, we officially transition to building the files that the R script wants
@@ -428,21 +432,24 @@ def interpret_featurecounts(filepath, samplename):
 pd.set_option('display.max_columns', 30)
 # pd.set_option('display.width', 2000)
 
-Homo_Sapiens_38 = open("/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf", 'r')
-print('GTF opened, converting to dataframe')
-call("echo 'GTF opened, converting to dataframe'", shell=True)
-df = read_gtf(Homo_Sapiens_38)
-print('Conversion successful')
-call("echo 'GTF opened, converting to dataframe'", shell=True)
-print('Isolating IG regions')
-call("echo 'GTF opened, converting to dataframe'", shell=True)
-ig_dataframe = isolate_ig(df)
-print('Isolation Successful')
-call("echo 'GTF opened, converting to dataframe'", shell=True)
-# Call the to_gtf function on the specified file.
-print('Converting isolated dataframe to GTF')
-to_gtf(ig_dataframe, '/Users/bodinet/Desktop/testwholescriptgtf')
-print('Conversion successful')
+if build == 'Y':
+    gtf_to_build = open(r'%s' % in_gtf, 'r')
+    print('GTF opened, converting to dataframe')
+    call("echo 'GTF opened, converting to dataframe'", shell=True)
+    df = read_gtf(gtf_to_build)
+    print('Conversion successful')
+    call("echo 'GTF opened, converting to dataframe'", shell=True)
+    print('Isolating IG regions')
+    call("echo 'GTF opened, converting to dataframe'", shell=True)
+    ig_dataframe = isolate_ig(df)
+    print('Isolation Successful')
+    call("echo 'GTF opened, converting to dataframe'", shell=True)
+    # Call the to_gtf function on the specified file.
+    print('Converting isolated dataframe to GTF')
+    to_gtf(ig_dataframe, '/Users/bodinet/Desktop/testwholescriptgtf')
+    print('Conversion successful')
+else:
+    pass
 
 # Run featurecounts from the shell
 call("featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -a /scratch/bodinet/MMRF_CoMMpass/"
@@ -456,6 +463,7 @@ samplename = 'placeholder'
 interpret_featurecounts(filepath, samplename)
 
 call("R < %s/igh_graph.R --no-save" % filepath)
+
 
 
 
