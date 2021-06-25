@@ -33,8 +33,7 @@ in_gtf = args.input_gtf
 in_bam = args.input_bam
 build = args.build_files
 
-quit()
-exit()
+
 
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
@@ -438,16 +437,20 @@ if build == 'Y':
     call("echo 'GTF opened, converting to dataframe'", shell=True)
     df = read_gtf(gtf_to_build)
     print('Conversion successful')
-    call("echo 'GTF opened, converting to dataframe'", shell=True)
+    call("echo 'Conversion successful'", shell=True)
     print('Isolating IG regions')
-    call("echo 'GTF opened, converting to dataframe'", shell=True)
+    call("echo 'Isolating IG regions'", shell=True)
     ig_dataframe = isolate_ig(df)
     print('Isolation Successful')
-    call("echo 'GTF opened, converting to dataframe'", shell=True)
+    call("echo 'Isolation Successful'", shell=True)
     # Call the to_gtf function on the specified file.
     print('Converting isolated dataframe to GTF')
+    call("echo 'Converting isolated dataframe to GTF'", shell=True)
     to_gtf(ig_dataframe, '/Users/bodinet/Desktop/testwholescriptgtf')
     print('Conversion successful')
+    call("echo 'Conversion successful'", shell=True)
+    quit()
+    exit()
 else:
     pass
 
