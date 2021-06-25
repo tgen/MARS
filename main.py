@@ -1,13 +1,37 @@
 #!/usr/bin/env python3
+import argparse
 import pandas as pd
 import numpy as np
 import os
+import scipy
 from gtfparse import read_gtf
 from subprocess import call
+from scipy import stats
 
-    # shell=True is so you can handle redirects like in the 3rd command
-call("echo 'It works'", shell=True)
-quit()
+# shell=True is so you can handle redirects
+call("echo 'Running'", shell=True)
+# quit()
+
+# Argument parser to facilitate calling from the command line
+
+parser = argparse.ArgumentParser(description='Assemble DLE fastqs and call myeloma Ig translocation calls.')
+parser.add_argument('-i', '--input_bam',
+                    required=True,
+                    metavar='File.bam',
+                    dest="input_file",
+                    help='Merged bam of all regional contigs from DLE')
+parser.add_argument('-g', '--input_gtf',
+                    help='Specimen Name, must match the bam')
+parser.add_argument('-o', '--output_path',
+                    required=True,
+                    metavar='File.tsv',
+                    help='Output path')
+
+args = parser.parse_args()
+
+
+
+
 
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
@@ -27,8 +51,8 @@ def to_gtf(dataframe, filepath):
     (the function takes care of that). It should be written as a raw string to prevent unicode escape errors.
     For example, if you want to write to /Users/myname/Desktop, name the file "example.gtf", and your dataframe is
     called "df", you should call the function as follows:
-                        to_gtf(df, r'/Users/myname/Desktop/example')
-                        *** The r is not a typo. This formats the path as a raw string.
+                        to_gtf(df, '/Users/myname/Desktop/example')
+
     :return: No true return, but it will place the output GTF file in the specified file path.
     """
     print('Converting dataframe to GTF')
@@ -122,14 +146,14 @@ def to_gtf(dataframe, filepath):
     print('Writing CSV')
     # Send the edited dataframe to a CSV file in the desired filepath. The code below (data = ...) converts the CSV to
     # tab-separated text and saves as a GTF in the desired filepath.
-    dataframe.to_csv('%s.csv' % filepath, index=False)
+    dataframe.to_csv(r'%s.csv' % filepath, index=False)
     print('CSV Written')
     # This block of code converts the CSV to a GTF by taking each column, writing in as a string, inserting a tab, and
     # starting a new line after the ninth column. (even though it says [8], its a 0-index, which is confusing but still)
     # The text file will be saved in the specified file path. It WILL NOT overwrite files with the same name.
     print('Converting to GTF')
-    data = pd.read_csv('%s.csv' % filepath, encoding='utf-8')
-    with open('%s.gtf' % filepath, 'a+', encoding='utf-8') as f:
+    data = pd.read_csv(r'%s.csv' % filepath, encoding='utf-8')
+    with open(r'%s.gtf' % filepath, 'a+', encoding='utf-8') as f:
         for line in data.values:
             f.write((str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\t' + str(line[3]) + '\t' + str(
                 line[4]) + '\t' + str(line[5]) + '\t' + str(line[6]) + '\t' + str(line[7]) + '\t' + str(
@@ -138,7 +162,7 @@ def to_gtf(dataframe, filepath):
     # This removes the CSV that was made earlier, since it's only necessary to write the GTF. If you want to keep the
     # CSV, feel free to disable/delete this line.
     print('Removing CSV')
-    #os.remove('%s.csv' % filepath)
+    os.remove(r'%s.csv' % filepath)
     print('CSV Removed')
 
 
@@ -184,6 +208,216 @@ def isolate_ig(dataframe, chromosome_list=['2', '14', '22'], component_list=['IG
     return ig_dataframe
 
 
+def interpret_featurecounts(filepath, samplename):
+    '''
+
+    :param filepath: The directory in which the files built here will be deposited, and the files used here will
+    be sourced from.
+    :param samplename:
+    :return:
+    '''
+
+    # equivalent to temp_featurecounts_counts in bash script
+
+    # Create dataframe called "reads" by importing the output from featurecounts. First row is skipped in the import
+    # since it is just a header, second row is used to generate column labels. Tab-separated and new-line-terminated
+    # are specified to ensure a proper read (the output dataframe will be one column or row if not specified)
+    reads = pd.read_csv(r'%s/featureCounts_Counts_original.txt' % filepath, sep='\t', lineterminator='\n',
+                        skiprows=(0), header=(1))
+    # Rename the column containing the counts to "Count". For whatever reason it comes labeled with the input file path.
+    reads.rename(columns={reads.columns[6]: "Count"}, inplace=True)
+
+    # Read in featurecounts's summary file
+    summary = pd.read_csv(r'%s/temp_featureCounts_Counts.txt.summary' % filepath, sep='\t',
+                          lineterminator='\n', skiprows=(0), header=(0))
+    # Rename the Count column, since it is given a long and unweildy name by default.
+    summary.rename(columns={summary.columns[1]: "Count"}, inplace=True)
+
+    # Create a new dataframe, "Condensed", containing data for Assigned reads and ignoring Unassigned reads EXCEPT
+    # those unassigned because they did not map to anything included in the GTF. These represent Ig genes and Non-Ig
+    # genes respectively, while the excluded data represents reads that map to more than one location, reads of too
+    # poor quality to map, and other "noisy" data that should be excluded.
+    condensed = summary[
+        summary['Status'].str.contains('Assigned') | summary['Status'].str.contains('Unassigned_NoFeatures')]
+
+    # Sum the "count" column of the condensed dataframe to generate the total number of verified reads (needed
+    # to calculate RPKM).
+    Featurecount_Total = condensed['Count'].sum()
+
+    # Read in all text files containing the names of genes in specific loci (or known to be contaminants) as lists.
+    Contaminant_List = open(r'%s/Non_Bcell_Contamination_GeneList_e98.txt' % filepath, 'r').read().split(
+        '\n')
+    IGH_Variable_List = open(r'%s/IgH_Variable_Genes.txt' % filepath, 'r').read().split('\n')
+    IGH_Constant_List = open(r'%s/IgH_Constant_Genes.txt' % filepath, 'r').read().split('\n')
+    IGK_Variable_List = open(r'%s/IgK_Variable_Genes.txt' % filepath, 'r').read().split('\n')
+    IGK_Constant_List = open(r'%s/IgK_Constant_Genes.txt' % filepath, 'r').read().split('\n')
+    IGL_Variable_List = open(r'%s/IgL_Variable_Genes.txt' % filepath, 'r').read().split('\n')
+    IGL_Constant_List = open(r'%s/IgL_Constant_Genes.txt' % filepath, 'r').read().split('\n')
+
+    # Equivalent to featurecounts_counts post-processing
+
+    # Drop the chromosome, start, end, and strand columns of the "reads" dataframe. Generate two new columns,
+    # "Reads per base pair" (gene reads divided by gene length), and "RPKM" (reads per kilobase million), a measurement
+    # equivalent to [(1,000,000)*(Number of Reads for a Gene)]/[(Gene Length in kb)*(Total Reads for the Sample)].
+    # A multiplicative factor of one billion is used here instead of one million because featurecounts returns gene
+    # length in base pairs, not kilobase pairs, and therefore the extra factor of one thousand is necessary.
+    reads = pd.concat([reads['Geneid'], reads['Count'], reads['Length'], reads['Count'] / reads['Length'],
+                       1000000000 * reads['Count'] / reads['Length'] / Featurecount_Total], axis=1)
+    # Rename the new columns to "reads per bp" and "RPKM". When they are generated,
+    # pandas labels them with numbers automatically.
+    reads.rename(columns={reads.columns[3]: 'Reads per bp', reads.columns[4]: 'RPKM'}, inplace=True)
+
+    # Calculate the geometric mean of the RPKM column for all identified genes known to be contaminants.
+
+    # Geometric mean is equivalent to the **product** of n elements divided by n, as opposed to the more common
+    # arithmetic mean, the **sum** of n elements divided by n.
+
+    # Take the featurecounts output and isolate a dataframe containing only genes known to be
+    # in the list of contaminants.
+    geomeandf = reads[reads['Geneid'].isin(Contaminant_List)]
+    # Add one to each element of the RPKM column. This is to avoid a multiply-by-zero situation when calculating
+    # the geomean. At any instance of 0, the mean is instead multiplied by one, yielding the same result.
+    # We assume adding 1 universally scales the geometric mean equivalently for all measurements.
+    geomeandf['RPKM'] = geomeandf['RPKM'] + 1
+    # Call scipy's gmean function on the RPKM column of the geomean dataframe to get the geometric mean.
+    # It is rounded to two decimal places here for readability, but the user should feel free to choose any number.
+    geomean = scipy.stats.gmean(geomeandf.loc[:, 'RPKM'], axis=0).round(2)
+
+    # Equivalent to IGH_Variable_Counts, etc. in bash script
+
+    # Create dataframes of genes specific to each locus by returning the subset of the complete dataframe where the gene
+    # name (in column Geneid) is in one of the lists imported above.
+    # The reset_index method is used again here since a column is added later, and if the indices are not consistent
+    # between the two, the column will not be properly appended to the dataframe.
+    IGHVdf = reads[reads['Geneid'].isin(IGH_Variable_List)].reset_index()
+    IGHCdf = reads[reads['Geneid'].isin(IGH_Constant_List)].reset_index()
+    IGKVdf = reads[reads['Geneid'].isin(IGK_Variable_List)].reset_index()
+    IGKCdf = reads[reads['Geneid'].isin(IGK_Constant_List)].reset_index()
+    IGLVdf = reads[reads['Geneid'].isin(IGL_Variable_List)].reset_index()
+    IGLCdf = reads[reads['Geneid'].isin(IGL_Constant_List)].reset_index()
+    Contaminantdf = reads[reads['Geneid'].isin(Contaminant_List)].reset_index()
+
+    # Calculate the number of reads for each subset of genes by summing the
+    # "Count" column of their respective dataframes.
+    Total_IGHC_Reads = IGHCdf['Count'].sum()
+    Total_IGHV_Reads = IGHVdf['Count'].sum()
+    Total_IGKC_Reads = IGKCdf['Count'].sum()
+    Total_IGKV_Reads = IGKVdf['Count'].sum()
+    Total_IGLC_Reads = IGLCdf['Count'].sum()
+    Total_IGLV_Reads = IGLVdf['Count'].sum()
+
+    # Calculate the number of reads for the entire Heavy, Lambda, and Kappa loci. Since this information is included in
+    # a single cell, and need not be generated by summing the counts of a subset of the data, the .str.contains and .at
+    # methods are used, in place of the .isin and .sum methods used above. The reset_index method is necessary because
+    # while there is only one row of data for each of these loci, its index may be arbitrary, and will be kept by pandas
+    # by default, confusing the .at method. Forcing the index to 0 with the reset ensures that .at[0,'Count'] will work.
+    Total_IGH = reads[reads['Geneid'].str.contains('HEAVY_Locus')].reset_index().at[0, 'Count']
+    Total_IGK = reads[reads['Geneid'].str.contains('KAPPA_Locus')].reset_index().at[0, 'Count']
+    Total_IGL = reads[reads['Geneid'].str.contains('LAMBDA_Locus')].reset_index().at[0, 'Count']
+
+    # Generate several metrics used in later calculations using simple arithmetic on variables already produced.
+    Total_IG = Total_IGH + Total_IGK + Total_IGL
+    global Total_IG
+    Percent_IG = Total_IG / Featurecount_Total
+    global Percent_IG
+    Total_Light_Chain = Total_IGK + Total_IGL
+    global Total_Light_Chain
+    Total_Light_Variable = Total_IGKV_Reads + Total_IGLV_Reads
+    global Total_Light_Variable
+    Total_Light_Constant = Total_IGKC_Reads + Total_IGLC_Reads
+    global Total_Light_Constant
+    Percent_Kappa = Total_IGK / Total_Light_Chain
+    global Percent_Kappa
+    Percent_Lambda = Total_IGL / Total_Light_Chain
+    global Percent_Lambda
+
+    #####################################
+    # About here, we officially transition to building the files that the R script wants
+    #####################################
+
+    def generate_calc_table(dataframe, group_total, label):
+        labelseries = pd.Series([label] * len(dataframe.index))
+        dataframe_Calc = pd.concat([dataframe['Geneid'], dataframe['Count'], dataframe['Count'] / group_total,
+                                    dataframe['Count'] / Featurecount_Total, labelseries, dataframe['Length']], axis=1)
+        dataframe_Calc.columns = ['Geneid', 'Count', 'List_Percent', 'Total_Percent', 'Subtype', 'Length']
+        return dataframe_Calc
+
+    IGHV_Calc = generate_calc_table(IGHVdf, Total_IGHV_Reads, 'IGHV')
+    IGHC_Calc = generate_calc_table(IGHCdf, Total_IGHC_Reads, 'IGHC')
+    IGKV_Calc = generate_calc_table(IGKVdf, Total_Light_Variable, 'IGKV')
+    IGKC_Calc = generate_calc_table(IGKCdf, Total_Light_Constant, 'IGKC')
+    IGLV_Calc = generate_calc_table(IGLVdf, Total_Light_Variable, 'IGLV')
+    IGLC_Calc = generate_calc_table(IGLCdf, Total_Light_Constant, 'IGLC')
+
+    Graph_IgL = pd.concat([IGKC_Calc, IGKV_Calc, IGLC_Calc, IGLV_Calc], ignore_index=True)
+    Graph_IgL.columns = ['CommonName', 'Count', 'Percentage', 'TotalFrequency', 'Locus', 'ElementSize']
+    Graph_IgH = pd.concat([IGHC_Calc, IGHV_Calc], ignore_index=True)
+    Graph_IgH.columns = ['CommonName', 'Count', 'Percentage', 'TotalFrequency', 'Locus', 'ElementSize']
+
+    Graph_IgH.to_csv(r'%s/Graph_IgH.txt' % filepath, sep='\t', float_format='%.12f', index=False)
+    Graph_IgL.to_csv(r'%s/Graph_IgL.txt' % filepath, sep='\t', float_format='%.12f', index=False)
+
+    def get_Primary(dataframe):
+        #
+        Primary = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[0, 'Geneid']
+        PrimaryFreq = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[0, 'List_Percent']
+        Secondary = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[1, 'Geneid']
+        SecondaryFreq = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[1, 'List_Percent']
+        Delta = PrimaryFreq - SecondaryFreq
+        return pd.Series([Primary, PrimaryFreq, Secondary, SecondaryFreq, Delta])
+
+    # Equivalent to forTable_IgLC etc in bash script
+    IG_light_constant = IGKC_Calc.append(IGLC_Calc, ignore_index=True)
+    IG_light_variable = IGKV_Calc.append(IGLV_Calc, ignore_index=True)
+
+    primaryIGHC = get_Primary(IGHC_Calc)
+    primaryIGHV = get_Primary(IGHV_Calc)
+    primaryIGLC = get_Primary(IG_light_constant)
+    primaryIGLV = get_Primary(IG_light_variable)
+
+    Topframe = pd.concat([primaryIGHC, primaryIGHV, primaryIGLC, primaryIGLV], axis=1).transpose()
+    Topframe.insert(0, 'Locus', ['IGHC', 'IGHV', 'IGLC', 'IGLV'], allow_duplicates=False)
+    Topframe.columns = ['Locus', 'Primary', 'PrimaryFreq', 'Secondary', 'SecondaryFreq', 'Delta']
+
+    Top1 = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[0, 'PrimaryFreq']
+    Top2 = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[1, 'PrimaryFreq']
+    Top1_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[0, 'Delta']
+    Top2_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[1, 'Delta']
+
+    # This code generates a tab-separated text file containing the important results from the data in one row and
+    # labels for each piece of data in a row above.
+
+    # This list contains each of the labels.
+    label_list = ["Sample", "PrimaryIgHC", "PrimaryIgHC_Freq", "SecondaryIgHC", "DeltaIgHC", "PrimaryIgHV",
+                  "PrimaryIgHV_Freq", "SecondaryIgHV", "DeltaIgHV", "PrimaryIgLC", "PrimaryIgLC_Freq", "SecondaryIgLC",
+                  "DeltaIgLC", "PrimaryIgLV", "PrimaryIgLV_Freq", "SecondaryIgLV", "DeltaIgLV", "TOTAL_IGHC_READS",
+                  "TOTAL_IGHV_READS", "TOTAL_IGKC_READS", "TOTAL_IGKV_READS", "TOTAL_IGLC_READS", "TOTAL_IGLV_READS",
+                  "TOTAL_IGH", "TOTAL_IGK", "TOTAL_IGL", "TOTAL_IG", "PERCENT_IG", "TOTAL_LIGHT_CHAIN",
+                  "TOTAL_LIGHT_VARIABLE", "TOTAL_LIGHT_CONSTANT", "PERCENT_KAPPA", "PERCENT_LAMBDA", "Top1", "Top2",
+                  "Mean_Top_Delta", "NonB_Contamination"]
+    # This list contains each of the corresponding variables converted to strings so they can be written to text.
+    # TODO: make this the actual sample name # tentatively done
+    results_list = ["%s" % samplename, str(primaryIGHC[0]), str(primaryIGHC[1]), str(primaryIGHC[2]), str(primaryIGHC[4]),
+                    str(primaryIGHV[0]), str(primaryIGHV[1]), str(primaryIGHV[2]), str(primaryIGHV[4]),
+                    str(primaryIGLC[0]), str(primaryIGLC[1]), str(primaryIGLC[2]), str(primaryIGLC[4]),
+                    str(primaryIGLV[0]), str(primaryIGLV[1]), str(primaryIGLV[2]), str(primaryIGLV[4]),
+                    str(Total_IGHC_Reads), str(Total_IGHV_Reads), str(Total_IGKC_Reads), str(Total_IGKV_Reads),
+                    str(Total_IGLC_Reads), str(Total_IGLV_Reads), str(Total_IGH), str(Total_IGK), str(Total_IGL),
+                    str(Total_IG), str(Percent_IG), str(Total_Light_Chain), str(Total_Light_Variable),
+                    str(Total_Light_Constant), str(Percent_Kappa), str(Percent_Lambda), str(Top1), str(Top2),
+                    str((Top1_Delta + Top2_Delta) / 2), str(geomean)]
+
+    # This block of code opens a new text file, writes the first list into the file tab-separated, then writes
+    # a new line, and does the same for the list of results.
+    textfile = open(r"%s/%spurityCheckerResults.txt" % (filepath, samplename), "w")
+    for element in label_list:
+        textfile.write(element + "\t")
+    textfile.write("\n")
+    for element in results_list:
+        textfile.write(element + "\t")
+    textfile.close()
+
+
 # ------------------------------------------------------------------------------------------------------------------- #
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -196,20 +430,36 @@ pd.set_option('display.max_columns', 30)
 
 Homo_Sapiens_38 = open("/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf", 'r')
 print('GTF opened, converting to dataframe')
+call("echo 'GTF opened, converting to dataframe'", shell=True)
 df = read_gtf(Homo_Sapiens_38)
 print('Conversion successful')
-df = df.head(20)
-
+call("echo 'GTF opened, converting to dataframe'", shell=True)
+print('Isolating IG regions')
+call("echo 'GTF opened, converting to dataframe'", shell=True)
+ig_dataframe = isolate_ig(df)
+print('Isolation Successful')
+call("echo 'GTF opened, converting to dataframe'", shell=True)
 # Call the to_gtf function on the specified file.
-to_gtf(df, r'/Users/bodinet/Desktop/mouse_test3')
+print('Converting isolated dataframe to GTF')
+to_gtf(ig_dataframe, '/Users/bodinet/Desktop/testwholescriptgtf')
+print('Conversion successful')
 
-# print('step3')
-# df.to_csv(r'/Users/bodinet/Downloads/Mouse_Dataframe_8.csv', index = True, header=True)
-# print('step4')
+# Run featurecounts from the shell
+call("featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -a /scratch/bodinet/MMRF_CoMMpass/"
+     "myeloma_purityCalculator_RNAseq/Immunoglobulin_RegionsToCount.gtf -o /scratch/bodinet/testfolder/"
+     "temp_featureCounts_Counts_BERT_TEST.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
+     "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam", shell=True)
 
-humandf = pd.read_csv(r'/Users/bodinet/Downloads/Human_Dataframe_8.csv')
-chromosomelist = ['2', '14', '22']
-rlist = ['IG_V', 'IG_C']
+filepath = "placeholder"
+samplename = 'placeholder'
+# Run the interpret_featurecounts function on featurecounts' output
+interpret_featurecounts(filepath, samplename)
 
-igs_isolated = isolate_ig(humandf, chromosomelist, rlist)
+call("R < %s/igh_graph.R --no-save" % filepath)
+
+
+
+
+
+
 
