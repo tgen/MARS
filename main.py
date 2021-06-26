@@ -39,7 +39,7 @@ build = args.build_files
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
 # ------------------------------------------------------------------------------------------------------------------- #
 
-
+# TODO: this function is putting nan in the score column instead of replacing it. Not fatal, but need to fix.
 def to_gtf(dataframe, filepath):
     """
     Function converts a python dataframe into a GTF (Gene Transfer Format) file.
@@ -449,16 +449,17 @@ if build == 'Y':
     to_gtf(ig_dataframe, r'%s/Maidentest' % out_path)
     print('Conversion successful')
     call("echo 'Conversion successful'", shell=True)
-    quit()
-    exit()
+
 else:
     pass
 
 # Run featurecounts from the shell
-call("featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -a /scratch/bodinet/MMRF_CoMMpass/"
-     "myeloma_purityCalculator_RNAseq/Immunoglobulin_RegionsToCount.gtf -o /scratch/bodinet/testfolder/"
-     "temp_featureCounts_Counts_BERT_TEST.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
-     "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam", shell=True)
+call("featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -a %s/Maidentest.gtf -o /scratch/bodinet/testfolder/"
+     "temp_featureCounts_Counts_maidentest.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
+     "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam" % out_path, shell=True)
+
+quit()
+exit()
 
 filepath = "placeholder"
 samplename = 'placeholder'
