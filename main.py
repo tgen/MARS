@@ -446,7 +446,7 @@ if build == 'Y':
     # Call the to_gtf function on the specified file.
     print('Converting isolated dataframe to GTF')
     call("echo 'Converting isolated dataframe to GTF'", shell=True)
-    to_gtf(ig_dataframe, '/Users/bodinet/Desktop/testwholescriptgtf')
+    to_gtf(ig_dataframe, r'%s/Maidentest' % out_path)
     print('Conversion successful')
     call("echo 'Conversion successful'", shell=True)
     quit()
