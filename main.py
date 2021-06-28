@@ -166,7 +166,7 @@ def to_gtf(dataframe, filepath):
     print('Removing CSV')
     os.remove(r'%s.csv' % filepath)
     print('CSV Removed')
-
+# TODO: gtf builder is not including contaminants or loci, need to fix (this one is fatal)
 
 def isolate_ig(dataframe, chromosome_list=['2', '14', '22'], component_list=['IG_V', 'IG_C']):
     """
@@ -362,10 +362,10 @@ def interpret_featurecounts(filepath, samplename):
 
     def get_Primary(dataframe):
         #
-        Primary = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[0, 'Geneid']
-        PrimaryFreq = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[0, 'List_Percent']
-        Secondary = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[1, 'Geneid']
-        SecondaryFreq = dataframe.sort_values(by='Count', ascending=False, ignore_index=True).at[1, 'List_Percent']
+        Primary = dataframe.sort_values(by='Count', ascending=False).reset_index().at[0, 'Geneid']
+        PrimaryFreq = dataframe.sort_values(by='Count', ascending=False).reset_index().at[0, 'List_Percent']
+        Secondary = dataframe.sort_values(by='Count', ascending=False).reset_index().at[1, 'Geneid']
+        SecondaryFreq = dataframe.sort_values(by='Count', ascending=False).reset_index().at[1, 'List_Percent']
         Delta = PrimaryFreq - SecondaryFreq
         return pd.Series([Primary, PrimaryFreq, Secondary, SecondaryFreq, Delta])
 
