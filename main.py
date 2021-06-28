@@ -224,13 +224,13 @@ def interpret_featurecounts(filepath, samplename):
     # Create dataframe called "reads" by importing the output from featurecounts. First row is skipped in the import
     # since it is just a header, second row is used to generate column labels. Tab-separated and new-line-terminated
     # are specified to ensure a proper read (the output dataframe will be one column or row if not specified)
-    reads = pd.read_csv(r'%s/featureCounts_Counts_original.txt' % filepath, sep='\t', lineterminator='\n',
+    reads = pd.read_csv(r'%s/temp_featureCounts_Counts_maidentest.txt' % filepath, sep='\t', lineterminator='\n',
                         skiprows=(0), header=(1))
     # Rename the column containing the counts to "Count". For whatever reason it comes labeled with the input file path.
     reads.rename(columns={reads.columns[6]: "Count"}, inplace=True)
 
     # Read in featurecounts's summary file
-    summary = pd.read_csv(r'%s/temp_featureCounts_Counts.txt.summary' % filepath, sep='\t',
+    summary = pd.read_csv(r'%s/temp_featureCounts_Counts_maidentest.txt.summary' % filepath, sep='\t',
                           lineterminator='\n', skiprows=(0), header=(0))
     # Rename the Count column, since it is given a long and unweildy name by default.
     summary.rename(columns={summary.columns[1]: "Count"}, inplace=True)
@@ -458,15 +458,12 @@ call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g ge
      "temp_featureCounts_Counts_maidentest.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
      "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam" % out_path, shell=True)
 
-quit()
-exit()
 
-filepath = "placeholder"
-samplename = 'placeholder'
+
 # Run the interpret_featurecounts function on featurecounts' output
-interpret_featurecounts(filepath, samplename)
+interpret_featurecounts('%s' % out_path, '%s' % in_bam)
 
-call("R < %s/igh_graph.R --no-save" % filepath)
+call("R < %s/igh_graph.R --no-save" % out_path)
 
 
 
