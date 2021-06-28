@@ -454,7 +454,7 @@ else:
     pass
 
 # Run featurecounts from the shell
-call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -a %s/Maidentest.gtf -o /scratch/bodinet/testfolder/"
+call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Maidentest.gtf -o /scratch/bodinet/testfolder/"
      "temp_featureCounts_Counts_maidentest.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
      "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam" % out_path, shell=True)
 
