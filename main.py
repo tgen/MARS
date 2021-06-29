@@ -8,6 +8,7 @@ import scipy
 from gtfparse import read_gtf
 from subprocess import call
 from scipy import stats
+from AGEpy import writeGTF
 
 # shell=True is so you can handle redirects
 call("echo 'Running'", shell=True)
@@ -484,7 +485,8 @@ if build == 'Y': # & in_gtf != '':
     # Call the to_gtf function on the specified file.
 
     call("echo 'Converting isolated dataframe to GTF'", shell=True)
-    to_gtf(ig_dataframe, r'%s/Updated_test' % out_path)
+    # to_gtf(ig_dataframe, r'%s/Updated_test' % out_path)
+    writeGTF(ig_dataframe, r'%s/Updated_test' % out_path)
 
     call("echo 'Conversion successful'", shell=True)
 
@@ -512,6 +514,10 @@ call('R <%s/igh_graph.R --no-save' % out_path, shell=True)
 
 
 
+##########################################
+# TESTING GROUND
+##########################################
 
-
-
+# out_path = r'/Users/bodinet/Downloads'
+# in_gtf = r'/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf'
+##########################################
