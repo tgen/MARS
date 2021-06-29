@@ -454,7 +454,7 @@ def interpret_featurecounts(filepath, samplename):
 pd.set_option('display.max_columns', 30)
 # pd.set_option('display.width', 2000)
 
-if build == 'Y' & in_gtf != '':
+if build == 'Y': # & in_gtf != '':
     call("echo 'Starting file build'", shell=True)
     call("echo 'Opening GTF'", shell=True)
     gtf_to_build = open(r'%s' % in_gtf, 'r')
@@ -484,21 +484,21 @@ if build == 'Y' & in_gtf != '':
     # Call the to_gtf function on the specified file.
 
     call("echo 'Converting isolated dataframe to GTF'", shell=True)
-    to_gtf(ig_dataframe, r'%s/Maidentest' % out_path)
+    to_gtf(ig_dataframe, r'%s/Updated_test' % out_path)
 
     call("echo 'Conversion successful'", shell=True)
 
-elif build == 'Y' & in_gtf == '':
+# elif build == 'Y' & in_gtf == '':
 
-    call("echo 'ERROR: To build files an input GTF must be provided.'", shell=True)
-    sys.exit('ERROR: To build files an input GTF must be provided.')
+   # call("echo 'ERROR: To build files an input GTF must be provided.'", shell=True)
+   # sys.exit('ERROR: To build files an input GTF must be provided.')
 
 else:
     pass
 
 # Run featurecounts from the shell
-call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Maidentest.gtf -o /scratch/bodinet/testfolder/"
-     "temp_featureCounts_Counts_maidentest.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
+call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Updated_test.gtf -o /scratch/bodinet/testfolder/"
+     "Counts_Updated_test.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
      "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam" % out_path, shell=True)
 
 
