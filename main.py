@@ -8,7 +8,8 @@ import scipy
 from gtfparse import read_gtf
 from subprocess import call
 from scipy import stats
-from AGEpy import writeGTF
+# import csv
+# from AGEpy import writeGTF
 
 # shell=True is so you can handle redirects
 call("echo 'Running'", shell=True)
@@ -442,7 +443,47 @@ def interpret_featurecounts(filepath, samplename):
     titletextfile.write("Percent Ig = %s ; Kappa/(K+L) = %s ; Lambda/(K+L) = %s ; Non B Contamination = %s" % (str(Percent_IG), str(Percent_Kappa), str(Percent_Lambda), str(geomean)))
     titletextfile.close()
 
+## !!!!! THIS HAS BEEN COPIED FROM AGEPy! WORKING ON GETTING FUNCTIONAL WITH PIP BUT THIS IS BEING USED IN THE MEAN TIME
 
+def writeGTF(inGTF,file_path):
+    """
+    Write a GTF dataframe into a file
+    :param inGTF: GTF dataframe to be written. It should either have 9 columns with the last one being the "attributes" section or more than 9 columns where all columns after the 8th will be colapsed into one.
+    :param file_path: path/to/the/file.gtf
+    :returns: nothing
+    """
+    cols=inGTF.columns.tolist()
+    if len(cols) == 9:
+        if 'attribute' in cols:
+            df=inGTF
+    else:
+        df=inGTF[cols[:8]]
+        df['attribute']=""
+        for c in cols[8:]:
+            if c == cols[len(cols)-1]:
+                df['attribute']=df['attribute']+c+' "'+inGTF[c].astype(str)+'";'
+            else:
+                df['attribute']=df['attribute']+c+' "'+inGTF[c].astype(str)+'"; '
+
+    df.to_csv(r'%s.csv' % file_path, index=False)
+    print('CSV Written')
+    # This block of code converts the CSV to a GTF by taking each column, writing in as a string, inserting a tab, and
+    # starting a new line after the ninth column. (even though it says [8], its a 0-index, which is confusing but still)
+    # The text file will be saved in the specified file path. It WILL NOT overwrite files with the same name.
+    print('Converting to GTF')
+    data = pd.read_csv(r'%s.csv' % file_path, encoding='utf-8')
+    with open(r'%s.gtf' % file_path, 'a+', encoding='utf-8') as f:
+        for line in data.values:
+            f.write((str(line[0]) + '\t' + str(line[1]) + '\t' + str(line[2]) + '\t' + str(line[3]) + '\t' + str(
+                line[4]) + '\t' + str(line[5]) + '\t' + str(line[6]) + '\t' + str(line[7]) + '\t' + str(
+                line[8]) + '\n'))
+    print('GTF conversion complete')
+    # This removes the CSV that was made earlier, since it's only necessary to write the GTF. If you want to keep the
+    # CSV, feel free to disable/delete this line.
+    print('Removing CSV')
+    os.remove(r'%s.csv' % file_path)
+    print('CSV Removed')
+    # df.to_csv(file_path, sep="\t",header=None,index=None,quoting=csv.QUOTE_NONE)
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
