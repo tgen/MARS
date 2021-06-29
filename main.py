@@ -10,7 +10,7 @@ from scipy import stats
 
 # shell=True is so you can handle redirects
 call("echo 'Running'", shell=True)
- #quit()
+
 
 # Argument parser to facilitate calling from the command line
 
@@ -412,13 +412,19 @@ def interpret_featurecounts(filepath, samplename):
 
     # This block of code opens a new text file, writes the first list into the file tab-separated, then writes
     # a new line, and does the same for the list of results.
-    textfile = open(r"%s/%spurityCheckerResults.txt" % (filepath, samplename), "w")
+    resultstextfile = open(r"%s/%spurityCheckerResults.txt" % (filepath, samplename), "w")
     for element in label_list:
-        textfile.write(element + "\t")
-    textfile.write("\n")
+        resultstextfile.write(element + "\t")
+    resultstextfile.write("\n")
     for element in results_list:
-        textfile.write(element + "\t")
-    textfile.close()
+        resultstextfile.write(element + "\t")
+    resultstextfile.close()
+
+    titletextfile = open(r"%s/title.txt" % filepath, "w")
+    titletextfile.write("Percent Ig = %s ; Kappa/(K+L) = %s ; Lambda/(K+L) = %s ; Non B Contamination = %s" % (str(Percent_IG), str(Percent_Kappa), str(Percent_Lambda), str(geomean)))
+    titletextfile.close()
+
+
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -464,8 +470,7 @@ call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g ge
 interpret_featurecounts('%s' % out_path, '%s' % in_bam)
 # TODO: build title.txt
 call('R <%s/igh_graph.R --no-save' % out_path, shell=True)
-# call('q()', shell=True)
-# call('n', shell=True)
+
 
 
 
