@@ -352,9 +352,9 @@ def interpret_featurecounts(filepath, samplename):
     IGLV_Calc = generate_calc_table(IGLVdf, Total_Light_Variable, 'IGLV')
     IGLC_Calc = generate_calc_table(IGLCdf, Total_Light_Constant, 'IGLC')
 
-    Graph_IgL = pd.concat([IGKC_Calc, IGKV_Calc, IGLC_Calc, IGLV_Calc], ignore_index=True)
+    Graph_IgL = pd.concat([IGKC_Calc, IGKV_Calc, IGLC_Calc, IGLV_Calc]).reset_index().drop(columns = 'index')
     Graph_IgL.columns = ['CommonName', 'Count', 'Percentage', 'TotalFrequency', 'Locus', 'ElementSize']
-    Graph_IgH = pd.concat([IGHC_Calc, IGHV_Calc], ignore_index=True)
+    Graph_IgH = pd.concat([IGHC_Calc, IGHV_Calc]).reset_index().drop(columns = 'index')
     Graph_IgH.columns = ['CommonName', 'Count', 'Percentage', 'TotalFrequency', 'Locus', 'ElementSize']
 
     Graph_IgH.to_csv(r'%s/Graph_IgH.txt' % filepath, sep='\t', float_format='%.12f', index=False)
@@ -370,8 +370,8 @@ def interpret_featurecounts(filepath, samplename):
         return pd.Series([Primary, PrimaryFreq, Secondary, SecondaryFreq, Delta])
 
     # Equivalent to forTable_IgLC etc in bash script
-    IG_light_constant = IGKC_Calc.append(IGLC_Calc, ignore_index=True)
-    IG_light_variable = IGKV_Calc.append(IGLV_Calc, ignore_index=True)
+    IG_light_constant = IGKC_Calc.append(IGLC_Calc).reset_index().drop(columns = 'index')
+    IG_light_variable = IGKV_Calc.append(IGLV_Calc).reset_index().drop(columns = 'index')
 
     primaryIGHC = get_Primary(IGHC_Calc)
     primaryIGHV = get_Primary(IGHV_Calc)
@@ -382,10 +382,10 @@ def interpret_featurecounts(filepath, samplename):
     Topframe.insert(0, 'Locus', ['IGHC', 'IGHV', 'IGLC', 'IGLV'], allow_duplicates=False)
     Topframe.columns = ['Locus', 'Primary', 'PrimaryFreq', 'Secondary', 'SecondaryFreq', 'Delta']
 
-    Top1 = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[0, 'PrimaryFreq']
-    Top2 = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[1, 'PrimaryFreq']
-    Top1_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[0, 'Delta']
-    Top2_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False, ignore_index=True).at[1, 'Delta']
+    Top1 = Topframe.sort_values(by='PrimaryFreq', ascending=False).reset_index().drop(columns = 'index').at[0, 'PrimaryFreq']
+    Top2 = Topframe.sort_values(by='PrimaryFreq', ascending=False).reset_index().drop(columns = 'index').at[1, 'PrimaryFreq']
+    Top1_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False).reset_index().drop(columns = 'index').at[0, 'Delta']
+    Top2_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False).reset_index().drop(columns = 'index').at[1, 'Delta']
 
     # This code generates a tab-separated text file containing the important results from the data in one row and
     # labels for each piece of data in a row above.
