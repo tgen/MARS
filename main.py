@@ -527,7 +527,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'Converting isolated dataframe to GTF'", shell=True)
     # to_gtf(ig_dataframe, r'%s/Updated_test' % out_path)
-    writeGTF(ig_dataframe, r'%s/Updated_test' % out_path)
+    writeGTF(ig_dataframe, r'%s/Updated_test_2' % out_path)
 
     call("echo 'Conversion successful'", shell=True)
 
@@ -540,7 +540,7 @@ else:
     pass
 
 # Run featurecounts from the shell
-call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Updated_test.gtf -o /scratch/bodinet/testfolder/"
+call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Updated_test_2.gtf -o /scratch/bodinet/testfolder/"
      "Counts_Updated_test.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
      "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam" % out_path, shell=True)
 
