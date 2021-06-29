@@ -216,13 +216,13 @@ def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=['2', '14', '2
     # (a list of the gene names of known contaminants)
     contaminant_dataframe = contaminant_dataframe[contaminant_dataframe['gene_name'].isin(contaminant_list)]
 
-    ig_dataframe = ig_dataframe.append(contaminant_dataframe).reset_index()
-    ig_dataframe = ig_dataframe.append(loci).reset_index()
+    ig_dataframe = ig_dataframe.append(contaminant_dataframe).reset_index(drop=True)
+    ig_dataframe = ig_dataframe.append(loci).reset_index(drop=True)
 
     ig_dataframe2 = ig_dataframe[ig_dataframe['gene_name'].str.match('IGK') & ig_dataframe['gene_name'].str.contains('D')]
     ig_dataframe2['gene_name'] = ig_dataframe2['gene_name'].str.replace('D', '')
     ig_dataframe = ig_dataframe.drop(ig_dataframe[(ig_dataframe.gene_name.str.contains('D')) & (ig_dataframe.gene_name.str.match('IGK'))].index)
-    ig_dataframe = ig_dataframe.append(ig_dataframe2).reset_index()
+    ig_dataframe = ig_dataframe.append(ig_dataframe2).reset_index(drop=True)
 
     return ig_dataframe
 
