@@ -464,8 +464,8 @@ call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g ge
 interpret_featurecounts('%s' % out_path, '%s' % in_bam)
 # TODO: build title.txt
 call('R <%s/igh_graph.R --no-save' % out_path, shell=True)
-call('q()', shell=True)
-
+# call('q()', shell=True)
+# call('n', shell=True)
 
 
 
