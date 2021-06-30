@@ -41,10 +41,10 @@ build = args.build_files
 # TESTING GROUND
 ##########################################
 
-#out_path = r'/Users/bodinet/Downloads'
-#in_gtf = r'/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf'
-#in_bam = 'update2'
-#build = 'Y'
+# out_path = r'/Users/bodinet/Downloads'
+# in_gtf = r'/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf'
+# in_bam = 'update2'
+# build = 'Y'
 ##########################################
 
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -234,6 +234,7 @@ def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=['2', '14', '2
     ig_dataframe2['gene_name'] = ig_dataframe2['gene_name'].str.replace('D', '')
     ig_dataframe = ig_dataframe.drop(ig_dataframe[(ig_dataframe.gene_name.str.contains('D')) & (ig_dataframe.gene_name.str.match('IGK'))].index)
     ig_dataframe = ig_dataframe.append(ig_dataframe2).reset_index(drop=True)
+
 
     return ig_dataframe
 
@@ -474,7 +475,8 @@ def writeGTF(inGTF,file_path):
             else:
                 df['attribute']=df['attribute']+c+' "'+inGTF[c].astype(str)+'"; '
 
-    df.to_csv(r'%s.csv' % file_path, index=False)
+    df[['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']].to_csv(r'%s.csv' % file_path, index=False)
+
     print('CSV Written')
     # This block of code converts the CSV to a GTF by taking each column, writing in as a string, inserting a tab, and
     # starting a new line after the ninth column. (even though it says [8], its a 0-index, which is confusing but still)
@@ -513,7 +515,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'GTF opened, converting to dataframe'", shell=True)
     df = read_gtf(gtf_to_build)
-    df.to_csv(r'%s/RawGTFDataframe.csv' % out_path, index=False)
+    # df.to_csv(r'%s/RawGTFDataframe.csv' % out_path, index=False)
     call("echo 'Conversion successful'", shell=True)
 
     call("echo 'Opening Loci'", shell=True)
@@ -521,7 +523,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'Loci opened, converting to dataframe'", shell=True)
     loci = read_gtf(loci_gtf)
-    loci.to_csv(r'%s/RawLociDataframe.csv' % out_path, index=False)
+    # loci.to_csv(r'%s/RawLociDataframe.csv' % out_path, index=False)
     call("echo 'Conversion successful'", shell=True)
 
     call("echo 'Fetching contaminant list'", shell=True)
@@ -531,13 +533,13 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'Isolating IG regions'", shell=True)
     ig_dataframe = isolate_ig(df, contaminant_list, loci)
-    ig_dataframe.to_csv(r'%s/RawIGDataframe.csv' % out_path, index=False)
+    # ig_dataframe.to_csv(r'%s/RawIGDataframe.csv' % out_path, index=False)
     call("echo 'Isolation Successful'", shell=True)
     # Call the to_gtf function on the specified file.
 
     call("echo 'Converting isolated dataframe to GTF'", shell=True)
     # to_gtf(ig_dataframe, r'%s/Updated_test' % out_path)
-    writeGTF(ig_dataframe, r'%s/Updated_test_3' % out_path)
+    writeGTF(ig_dataframe, r'%s/Updated_test_4' % out_path)
 
     call("echo 'Conversion successful'", shell=True)
 
