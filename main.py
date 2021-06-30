@@ -513,7 +513,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'GTF opened, converting to dataframe'", shell=True)
     df = read_gtf(gtf_to_build)
-
+    df.to_csv(r'%s/RawGTFDataframe.csv' % out_path, index=False)
     call("echo 'Conversion successful'", shell=True)
 
     call("echo 'Opening Loci'", shell=True)
@@ -521,7 +521,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'Loci opened, converting to dataframe'", shell=True)
     loci = read_gtf(loci_gtf)
-
+    loci.to_csv(r'%s/RawLociDataframe.csv' % out_path, index=False)
     call("echo 'Conversion successful'", shell=True)
 
     call("echo 'Fetching contaminant list'", shell=True)
@@ -531,7 +531,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'Isolating IG regions'", shell=True)
     ig_dataframe = isolate_ig(df, contaminant_list, loci)
-
+    df.to_csv(r'%s/RawIGDataframe.csv' % out_path, index=False)
     call("echo 'Isolation Successful'", shell=True)
     # Call the to_gtf function on the specified file.
 
