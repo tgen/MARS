@@ -531,7 +531,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'Isolating IG regions'", shell=True)
     ig_dataframe = isolate_ig(df, contaminant_list, loci)
-    df.to_csv(r'%s/RawIGDataframe.csv' % out_path, index=False)
+    ig_dataframe.to_csv(r'%s/RawIGDataframe.csv' % out_path, index=False)
     call("echo 'Isolation Successful'", shell=True)
     # Call the to_gtf function on the specified file.
 
