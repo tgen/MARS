@@ -37,6 +37,15 @@ in_bam = args.input_bam
 build = args.build_files
 
 
+##########################################
+# TESTING GROUND
+##########################################
+
+#out_path = r'/Users/bodinet/Downloads'
+#in_gtf = r'/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf'
+#in_bam = 'update2'
+#build = 'Y'
+##########################################
 
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
@@ -243,13 +252,13 @@ def interpret_featurecounts(filepath, samplename):
     # Create dataframe called "reads" by importing the output from featurecounts. First row is skipped in the import
     # since it is just a header, second row is used to generate column labels. Tab-separated and new-line-terminated
     # are specified to ensure a proper read (the output dataframe will be one column or row if not specified)
-    reads = pd.read_csv(r'%s/temp_featureCounts_Counts_BERT_TEST.txt' % filepath, sep='\t', lineterminator='\n',
+    reads = pd.read_csv(r'%s/Updated_test3.txt' % filepath, sep='\t', lineterminator='\n',
                         skiprows=(0), header=(1))
     # Rename the column containing the counts to "Count". For whatever reason it comes labeled with the input file path.
     reads.rename(columns={reads.columns[6]: "Count"}, inplace=True)
 
     # Read in featurecounts's summary file
-    summary = pd.read_csv(r'%s/temp_featureCounts_Counts_BERT_TEST.txt.summary' % filepath, sep='\t',
+    summary = pd.read_csv(r'%s/Updated_test3.txt.summary' % filepath, sep='\t',
                           lineterminator='\n', skiprows=(0), header=(0))
     # Rename the Count column, since it is given a long and unweildy name by default.
     summary.rename(columns={summary.columns[1]: "Count"}, inplace=True)
@@ -481,8 +490,8 @@ def writeGTF(inGTF,file_path):
     # This removes the CSV that was made earlier, since it's only necessary to write the GTF. If you want to keep the
     # CSV, feel free to disable/delete this line.
     print('Removing CSV')
-    os.remove(r'%s.csv' % file_path)
-    print('CSV Removed')
+   # os.remove(r'%s.csv' % file_path)
+   # print('CSV Removed')
     # df.to_csv(file_path, sep="\t",header=None,index=None,quoting=csv.QUOTE_NONE)
 
 
@@ -491,6 +500,7 @@ def writeGTF(inGTF,file_path):
 # ------------------------------------------------------------------------------------------------------------------- #
 
 
+# returns GTF with essential columns such as "feature", "seqname", "start", "end"
 # returns GTF with essential columns such as "feature", "seqname", "start", "end"
 # alongside the names of any optional keys which appeared in the attribute column
 pd.set_option('display.max_columns', 30)
@@ -527,7 +537,7 @@ if build == 'Y': # & in_gtf != '':
 
     call("echo 'Converting isolated dataframe to GTF'", shell=True)
     # to_gtf(ig_dataframe, r'%s/Updated_test' % out_path)
-    writeGTF(ig_dataframe, r'%s/Updated_test_2' % out_path)
+    writeGTF(ig_dataframe, r'%s/Updated_test_3' % out_path)
 
     call("echo 'Conversion successful'", shell=True)
 
@@ -540,8 +550,8 @@ else:
     pass
 
 # Run featurecounts from the shell
-call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Updated_test_2.gtf -o /scratch/bodinet/testfolder/"
-     "Counts_Updated_test.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
+call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Updated_test_3.gtf -o /scratch/bodinet/testfolder/"
+     "Updated_test3.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
      "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam" % out_path, shell=True)
 
 
@@ -555,10 +565,3 @@ call('R <%s/igh_graph.R --no-save' % out_path, shell=True)
 
 
 
-##########################################
-# TESTING GROUND
-##########################################
-
-# out_path = r'/Users/bodinet/Downloads'
-# in_gtf = r'/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf'
-##########################################
