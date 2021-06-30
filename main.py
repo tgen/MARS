@@ -475,8 +475,8 @@ def writeGTF(inGTF,file_path):
             else:
                 df['attribute']=df['attribute']+c+' "'+inGTF[c].astype(str)+'"; '
 
-    df = df[['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']]
-    df.to_csv(r'%s.csv' % file_path, index=False)
+    df2 = df[['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']]
+    df2.to_csv(r'%s.csv' % file_path, index=False)
 
     print('CSV Written')
     # This block of code converts the CSV to a GTF by taking each column, writing in as a string, inserting a tab, and
@@ -553,8 +553,8 @@ else:
     pass
 
 # Run featurecounts from the shell
-call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Updated_test_3.gtf -o /scratch/bodinet/testfolder/"
-     "Updated_test3.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
+call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/Updated_test_4.gtf -o /scratch/bodinet/testfolder/"
+     "Updated_test4.txt /scratch/bodinet/MMRF_2331/rna/alignment/star/"
      "MMRF_2331_1_BM_CD138pos_T3_TSMRU/MMRF_2331_1_BM_CD138pos_T3_TSMRU.star.bam" % out_path, shell=True)
 
 
