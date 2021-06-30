@@ -475,7 +475,8 @@ def writeGTF(inGTF,file_path):
             else:
                 df['attribute']=df['attribute']+c+' "'+inGTF[c].astype(str)+'"; '
 
-    df[['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']].to_csv(r'%s.csv' % file_path, index=False)
+    df = df[['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']]
+    df.to_csv(r'%s.csv' % file_path, index=False)
 
     print('CSV Written')
     # This block of code converts the CSV to a GTF by taking each column, writing in as a string, inserting a tab, and
