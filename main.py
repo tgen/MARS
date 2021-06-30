@@ -30,7 +30,7 @@ parser.add_argument('-b', '--build_files',
                     help='Type Y if you want to build the GTF, leave blank otherwise')
 
 args = parser.parse_args()
-
+#
 out_path = args.output_path
 in_gtf = args.input_gtf
 in_bam = args.input_bam
