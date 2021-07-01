@@ -21,7 +21,7 @@ parser.add_argument('-i', '--input_bam',
                     required=True,
                     help='BAM file for tumor sample')
 parser.add_argument('-g', '--input_gtf',
-                    action='store_true',
+                    # action='store_true',
                     help='GTF to be used in processing')
 parser.add_argument('-o', '--output_path',
                     required=True,
@@ -388,7 +388,7 @@ def writeGTF(inGTF, file_path):
 pd.set_option('display.max_columns', 30)
 # pd.set_option('display.width', 2000)
 
-if build & in_gtf:
+if build & in_gtf is not None:
     call("echo 'Starting file build'", shell=True)
     call("echo 'Opening GTF'", shell=True)
     gtf_to_build = open(r'%s' % in_gtf, 'r')
@@ -423,7 +423,7 @@ if build & in_gtf:
 
     call("echo 'Conversion successful'", shell=True)
 
-elif build & ~in_gtf:
+elif build & in_gtf is None:
 
    call("echo 'ERROR: To build files an input GTF must be provided.'", shell=True)
    sys.exit('ERROR: To build files an input GTF must be provided.')
