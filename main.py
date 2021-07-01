@@ -30,7 +30,12 @@ parser.add_argument('-b', '--build_files',
                     help='Include -b if you would like to build files, otherwise typing -b is unnecessary')
 parser.add_argument('-n', '--sample_name',
                     help='Desired name for the sample and associated files')
-parser.add_argument('-d', '--file_directory', nargs='?', const=str(os.getcwd()), default=str(os.getcwd()))
+parser.add_argument('-d', '--resource_directory',
+                    nargs='?',
+                    const=str(os.getcwd()),
+                    default=str(os.getcwd()),
+                    help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
+                         'Defaults to current directory.')
 
 args = parser.parse_args()
 
@@ -39,8 +44,8 @@ in_gtf = args.input_gtf
 in_bam = args.input_bam
 build = args.build_files
 samplename = args.sample_name
-directory = args.file_directory
-call("echo '%s'" % directory, shell=True)
+resource_directory = args.resource_directory
+
 
 ##########################################
 # TESTING GROUND
@@ -119,11 +124,11 @@ def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=['2', '14', '2
     return ig_dataframe
 
 
-def interpret_featurecounts(filepath, samplename):
+def interpret_featurecounts(filepath, resource_directory, samplename):
     '''
 
-    :param filepath: The directory in which the files built here will be deposited, and the files used here will
-    be sourced from.
+    :param filepath: The directory in which the files built here will be deposited
+    :param resource_directory: The directory from which the files used here will be sourced.
     :param samplename:
     :return:
     '''
@@ -156,14 +161,13 @@ def interpret_featurecounts(filepath, samplename):
     Featurecount_Total = condensed['Count'].sum()
 
     # Read in all text files containing the names of genes in specific loci (or known to be contaminants) as lists.
-    Contaminant_List = open(r'%s/Non_Bcell_Contamination_GeneList_e98.txt' % filepath, 'r').read().split(
-        '\n')
-    IGH_Variable_List = open(r'%s/IgH_Variable_Genes.txt' % filepath, 'r').read().split('\n')
-    IGH_Constant_List = open(r'%s/IgH_Constant_Genes.txt' % filepath, 'r').read().split('\n')
-    IGK_Variable_List = open(r'%s/IgK_Variable_Genes.txt' % filepath, 'r').read().split('\n')
-    IGK_Constant_List = open(r'%s/IgK_Constant_Genes.txt' % filepath, 'r').read().split('\n')
-    IGL_Variable_List = open(r'%s/IgL_Variable_Genes.txt' % filepath, 'r').read().split('\n')
-    IGL_Constant_List = open(r'%s/IgL_Constant_Genes.txt' % filepath, 'r').read().split('\n')
+    Contaminant_List = open(r'%s/Non_Bcell_Contamination_GeneList_e98.txt' % resource_directory, 'r').read().split('\n')
+    IGH_Variable_List = open(r'%s/IgH_Variable_Genes.txt' % resource_directory, 'r').read().split('\n')
+    IGH_Constant_List = open(r'%s/IgH_Constant_Genes.txt' % resource_directory, 'r').read().split('\n')
+    IGK_Variable_List = open(r'%s/IgK_Variable_Genes.txt' % resource_directory, 'r').read().split('\n')
+    IGK_Constant_List = open(r'%s/IgK_Constant_Genes.txt' % resource_directory, 'r').read().split('\n')
+    IGL_Variable_List = open(r'%s/IgL_Variable_Genes.txt' % resource_directory, 'r').read().split('\n')
+    IGL_Constant_List = open(r'%s/IgL_Constant_Genes.txt' % resource_directory, 'r').read().split('\n')
 
     # Equivalent to featurecounts_counts post-processing
 
@@ -225,7 +229,7 @@ def interpret_featurecounts(filepath, samplename):
     Total_IGH = reads[reads['Geneid'].str.contains('HEAVY_Locus')].reset_index().at[0, 'Count']
     Total_IGK = reads[reads['Geneid'].str.contains('KAPPA_Locus')].reset_index().at[0, 'Count']
     Total_IGL = reads[reads['Geneid'].str.contains('LAMBDA_Locus')].reset_index().at[0, 'Count']
-
+    # TODO: Unsure if these variables being global is even necessary after recent changes
     # Generate several metrics used in later calculations using simple arithmetic on variables already produced.
     global Total_IG
     Total_IG = Total_IGH + Total_IGK + Total_IGL
@@ -435,7 +439,7 @@ call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g ge
 
 
 # Run the interpret_featurecounts function on featurecounts' output
-interpret_featurecounts('%s' % out_path, '%s' % samplename)
+interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % samplename)
 
 call('R <%s/igh_graph.R --no-save' % out_path, shell=True)
 
