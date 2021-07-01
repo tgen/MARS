@@ -29,9 +29,9 @@ parser.add_argument('-b', '--build_files',
                     action='store_true',
                     help='Include -b if you would like to build files, otherwise typing -b is unnecessary')
 parser.add_argument('-n', '--sample_name',
-                   # nargs='?',
-                   # const=str(bamfilename),
-                   # default=str(bamfilename),
+                    #nargs='?',
+                    #const=os.path.basename(in_bam),
+                    #const=os.path.basename(in_bam),
                     help='Desired name for the sample and associated files')
 parser.add_argument('-d', '--resource_directory',
                     nargs='?',
@@ -48,6 +48,11 @@ in_bam = args.input_bam
 build = args.build_files
 samplename = args.sample_name
 resource_directory = args.resource_directory
+
+if samplename is None:
+    samplename = os.path.basename(in_bam)
+else:
+    pass
 
 call("echo '%s'" %in_bam, shell=True)
 
