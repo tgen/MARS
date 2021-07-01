@@ -50,8 +50,8 @@ samplename = args.sample_name
 resource_directory = args.resource_directory
 
 if samplename is None:
-    base = os.path.basename(in_bam)
-    samplename = str(os.path.splitext(base))
+    # base = os.path.basename(in_bam)
+    samplename = os.path.splitext(os.path.basename(in_bam))[0]
 else:
     pass
 
