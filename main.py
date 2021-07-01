@@ -30,6 +30,7 @@ parser.add_argument('-b', '--build_files',
                     help='Include -b if you would like to build files, otherwise typing -b is unnecessary')
 parser.add_argument('-n', '--sample_name',
                     help='Desired name for the sample and associated files')
+parser.add_argument('-d', '--file_directory' nargs='?', const=os.getcwd())
 
 args = parser.parse_args()
 
@@ -38,7 +39,8 @@ in_gtf = args.input_gtf
 in_bam = args.input_bam
 build = args.build_files
 samplename = args.sample_name
-
+directory = args.file_directory
+print(directory)
 
 ##########################################
 # TESTING GROUND
