@@ -437,7 +437,7 @@ call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g ge
 
 
 # Run the interpret_featurecounts function on featurecounts' output
-interpret_featurecounts('%s' % out_path, '%s' % in_bam)
+interpret_featurecounts('%s' % out_path, '%s' % samplename)
 
 call('R <%s/igh_graph.R --no-save' % out_path, shell=True)
 
