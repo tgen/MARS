@@ -21,7 +21,6 @@ parser.add_argument('-i', '--input_bam',
                     required=True,
                     help='BAM file for tumor sample')
 parser.add_argument('-g', '--input_gtf',
-                    # action='store_true',
                     help='GTF to be used in processing')
 parser.add_argument('-o', '--output_path',
                     required=True,
@@ -395,7 +394,6 @@ if in_gtf is not None and build is True:
 
     call("echo 'GTF opened, converting to dataframe'", shell=True)
     df = read_gtf(gtf_to_build)
-    # df.to_csv(r'%s/RawGTFDataframe.csv' % out_path, index=False)
     call("echo 'Conversion successful'", shell=True)
 
     call("echo 'Opening Loci'", shell=True)
@@ -403,7 +401,6 @@ if in_gtf is not None and build is True:
 
     call("echo 'Loci opened, converting to dataframe'", shell=True)
     loci = read_gtf(loci_gtf)
-    # loci.to_csv(r'%s/RawLociDataframe.csv' % out_path, index=False)
     call("echo 'Conversion successful'", shell=True)
 
     call("echo 'Fetching contaminant list'", shell=True)
@@ -413,27 +410,25 @@ if in_gtf is not None and build is True:
 
     call("echo 'Isolating IG regions'", shell=True)
     ig_dataframe = isolate_ig(df, contaminant_list, loci)
-    # ig_dataframe.to_csv(r'%s/RawIGDataframe.csv' % out_path, index=False)
     call("echo 'Isolation Successful'", shell=True)
     # Call the to_gtf function on the specified file.
 
     call("echo 'Converting isolated dataframe to GTF'", shell=True)
-    # to_gtf(ig_dataframe, r'%s/Updated_test' % out_path)
     writeGTF(ig_dataframe, r'%s/%s' % (out_path, samplename))
 
     call("echo 'Conversion successful'", shell=True)
 
 elif in_gtf is None and build is True:
 
-   call("echo 'ERROR: To build files an input GTF must be provided.'", shell=True)
    sys.exit('ERROR: To build files an input GTF must be provided.')
 
 else:
     pass
 
 # Run featurecounts from the shell
-call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name -O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o /scratch/bodinet/testfolder/"
-     "%s.txt %s" % (out_path, samplename, samplename, in_bam), shell=True)
+call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
+     "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
+     "%s.txt %s" % (out_path, samplename, out_path, samplename, in_bam), shell=True)
 
 
 
