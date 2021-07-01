@@ -8,8 +8,7 @@ import scipy
 from gtfparse import read_gtf
 from subprocess import call
 from scipy import stats
-# import csv
-# from AGEpy import writeGTF
+
 
 # shell=True is so you can handle redirects
 call("echo 'Running'", shell=True)
@@ -27,7 +26,7 @@ parser.add_argument('-o', '--output_path',
                     required=True,
                     help='Output path')
 parser.add_argument('-b', '--build_files',
-                    help='Type Y if you want to build the GTF, leave blank otherwise')
+                    help='Type Y if you want to build the GTF, leave blank otherwise', action='store_true')
 parser.add_argument('-n', '--sample_name',
                     help='Desired name for the sample and associated files')
 
@@ -387,7 +386,7 @@ def writeGTF(inGTF,file_path):
 pd.set_option('display.max_columns', 30)
 # pd.set_option('display.width', 2000)
 
-if build == 'Y': # & in_gtf != '':
+if build:  # == 'Y': # & in_gtf != '':
     call("echo 'Starting file build'", shell=True)
     call("echo 'Opening GTF'", shell=True)
     gtf_to_build = open(r'%s' % in_gtf, 'r')
