@@ -388,7 +388,7 @@ def writeGTF(inGTF, file_path):
 pd.set_option('display.max_columns', 30)
 # pd.set_option('display.width', 2000)
 
-if in_gtf is not None & build:
+if in_gtf is not None & build == True:
     call("echo 'Starting file build'", shell=True)
     call("echo 'Opening GTF'", shell=True)
     gtf_to_build = open(r'%s' % in_gtf, 'r')
@@ -423,7 +423,7 @@ if in_gtf is not None & build:
 
     call("echo 'Conversion successful'", shell=True)
 
-elif in_gtf is None & build:
+elif in_gtf is None & build == True:
 
    call("echo 'ERROR: To build files an input GTF must be provided.'", shell=True)
    sys.exit('ERROR: To build files an input GTF must be provided.')
