@@ -424,18 +424,20 @@ if in_gtf is not None and build is True:
 
     call("echo 'Conversion successful'", shell=True)
 
+    call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
+         "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
+         "%s.txt %s" % (out_path, samplename, out_path, samplename, in_bam), shell=True)
+
+
 elif in_gtf is None and build is True:
 
    sys.exit('ERROR: To build files an input GTF must be provided.')
 
 else:
-    pass
-
-# Run featurecounts from the shell
-call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
-     "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
-     "%s.txt %s" % (out_path, samplename, out_path, samplename, in_bam), shell=True)
-
+    # Run featurecounts from the shell
+    call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
+         "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
+         "%s.txt %s" % (resource_directory, 'HUMAN_IG_DEFAULT', out_path, samplename, in_bam), shell=True)
 
 
 # Run the interpret_featurecounts function on featurecounts' output
