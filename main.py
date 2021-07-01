@@ -47,6 +47,13 @@ samplename = args.sample_name
 resource_directory = args.resource_directory
 
 
+############################################
+#  DEFAULTS
+############################################
+default_gtf = 'HUMAN_IG_DEFAULT'
+
+
+
 ##########################################
 # TESTING GROUND
 ##########################################
@@ -437,7 +444,7 @@ else:
     # Run featurecounts from the shell
     call("/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
          "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
-         "%s.txt %s" % (resource_directory, 'HUMAN_IG_DEFAULT', out_path, samplename, in_bam), shell=True)
+         "%s.txt %s" % (resource_directory, default_gtf, out_path, samplename, in_bam), shell=True)
 
 
 # Run the interpret_featurecounts function on featurecounts' output
