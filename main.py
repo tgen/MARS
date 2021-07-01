@@ -30,7 +30,7 @@ parser.add_argument('-b', '--build_files',
                     help='Include -b if you would like to build files, otherwise typing -b is unnecessary')
 parser.add_argument('-n', '--sample_name',
                     help='Desired name for the sample and associated files')
-parser.add_argument('-d', '--file_directory', nargs='?', const=os.getcwd())
+parser.add_argument('-d', '--file_directory', nargs='?', const=str(os.getcwd()))
 
 args = parser.parse_args()
 
