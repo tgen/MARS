@@ -21,12 +21,14 @@ parser.add_argument('-i', '--input_bam',
                     required=True,
                     help='BAM file for tumor sample')
 parser.add_argument('-g', '--input_gtf',
+                    action='store_true',
                     help='GTF to be used in processing')
 parser.add_argument('-o', '--output_path',
                     required=True,
                     help='Output path')
 parser.add_argument('-b', '--build_files',
-                    help='Type Y if you want to build the GTF, leave blank otherwise', action='store_true')
+                    action='store_true',
+                    help='Include -b if you would like to build files, otherwise typing -b is unnecessary')
 parser.add_argument('-n', '--sample_name',
                     help='Desired name for the sample and associated files')
 
@@ -55,7 +57,7 @@ samplename = args.sample_name
 
 # TODO: this function is putting nan in the score column instead of replacing it. Not fatal, but need to fix.
 
-# TODO: isolate_ig is not including contaminants or loci, need to fix (this one is fatal)
+# TODO: double check IGKD vs IGHD and IGLD
 
 def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=['2', '14', '22'], component_list=['IG_V', 'IG_C']):
     """
@@ -332,7 +334,7 @@ def interpret_featurecounts(filepath, samplename):
 
 ## !!!!! THIS HAS BEEN COPIED FROM AGEPy!
 
-def writeGTF(inGTF,file_path):
+def writeGTF(inGTF, file_path):
     """
     Write a GTF dataframe into a file
     :param inGTF: GTF dataframe to be written. It should either have 9 columns with the last one being the "attributes" section or more than 9 columns where all columns after the 8th will be colapsed into one.
@@ -386,7 +388,7 @@ def writeGTF(inGTF,file_path):
 pd.set_option('display.max_columns', 30)
 # pd.set_option('display.width', 2000)
 
-if build:  # == 'Y': # & in_gtf != '':
+if build & in_gtf:
     call("echo 'Starting file build'", shell=True)
     call("echo 'Opening GTF'", shell=True)
     gtf_to_build = open(r'%s' % in_gtf, 'r')
@@ -421,10 +423,10 @@ if build:  # == 'Y': # & in_gtf != '':
 
     call("echo 'Conversion successful'", shell=True)
 
-# elif build == 'Y' & in_gtf == '':
+elif build & ~in_gtf:
 
-   # call("echo 'ERROR: To build files an input GTF must be provided.'", shell=True)
-   # sys.exit('ERROR: To build files an input GTF must be provided.')
+   call("echo 'ERROR: To build files an input GTF must be provided.'", shell=True)
+   sys.exit('ERROR: To build files an input GTF must be provided.')
 
 else:
     pass
