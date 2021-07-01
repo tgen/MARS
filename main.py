@@ -54,7 +54,7 @@ if samplename is None:
 else:
     pass
 
-call("echo '%s'" %in_bam, shell=True)
+call("echo 'SAMPLE NAME IS %s'" % samplename, shell=True)
 
 ############################################
 #  DEFAULTS
