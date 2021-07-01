@@ -40,7 +40,7 @@ in_bam = args.input_bam
 build = args.build_files
 samplename = args.sample_name
 directory = args.file_directory
-print(directory)
+call("echo '%s'" % directory, shell=True)
 
 ##########################################
 # TESTING GROUND
