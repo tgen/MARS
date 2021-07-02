@@ -15,15 +15,17 @@ The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to anal
 
   **Inputs**
   - Required:
-   -- An input BAM file
+   - An input BAM file
   - Optional:
-   -- A GTF file (with the -b flag invoked to build a reference GTF using the input GTF, or without the -b flag to use the GTF directly). Defaults to provided GTF if absent.
-   -- An output path (to specify where the output files should go). Defaults to current working directory if absent.
-   -- A resource directory (to specify where the resource files are located). Defaults to current working directory if absent.
-   -- A name for the sample. Defaults to the name of the input BAM if absent.
-   -- The -b option. Invoke to build the reference GTF. Must be used in tandem with the input GTF.
+   - A GTF file (with the -b flag invoked to build a reference GTF using the input GTF, or without the -b flag to use the GTF directly). Defaults to provided GTF if absent.
+   - An output path (to specify where the output files should go). Defaults to current working directory if absent.
+   - A resource directory (to specify where the resource files are located). Defaults to current working directory if absent.
+   - A name for the sample. Defaults to the name of the input BAM if absent.
+   - The -b option. Invoke to build the reference GTF. Must be used in tandem with the input GTF.
 
 **Biological Theory Behind Design**
+
+Multiple Myeloma (MM) is a cancer of plasma cells, a type of white blood cell responsible for producing a single unique immunoglobulin (IG). Experimental data show that it is extremely rare for mutations in oncogenes causing uncontrolled cell growth and mutations in genes responsible for IG production to overlap. Consequently, a 100% pure myeloma sample should theoretically exhibit production of only one IG RNA sequence, with additional IG RNA serving as an indicator of decreased purity. Furthermore, production of RNA associated with genes *downregulated* in plasma cells should serve as an additional indicator of contamination. This software uses the Subreads tool featureCounts to obtain RNA counts corresponding to IG genes and known contaminants, and graphs the output to provide an indication of sample purity.
 
 **Usage Examples**
 
