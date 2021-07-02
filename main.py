@@ -53,7 +53,7 @@ if samplename is None:
 else:
     pass
 
-# call("echo 'SAMPLE NAME IS %s'" % samplename, shell=True)
+
 
 ############################################
 #  DEFAULTS
@@ -131,7 +131,7 @@ def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=default_chromo
     ig_dataframe = ig_dataframe.append(contaminant_dataframe).reset_index(drop=True)
     ig_dataframe = ig_dataframe.append(loci).reset_index(drop=True)
 
-    ig_dataframe2 = ig_dataframe[ig_dataframe['gene_name'].str.match('IGK') & ig_dataframe['gene_name'].str.contains('D')]
+    ig_dataframe2 = ig_dataframe[ig_dataframe['gene_name'].str.match('IGK') & ig_dataframe['gene_name'].str.contains('D') | ig_dataframe['gene_name'].str.match('IGHV') & ig_dataframe['gene_name'].str.contains('D')]
     ig_dataframe2['gene_name'] = ig_dataframe2['gene_name'].str.replace('D', '')
     ig_dataframe = ig_dataframe.drop(ig_dataframe[(ig_dataframe.gene_name.str.contains('D')) & (ig_dataframe.gene_name.str.match('IGK'))].index)
     ig_dataframe = ig_dataframe.append(ig_dataframe2).reset_index(drop=True)
@@ -362,6 +362,7 @@ def writeGTF(inGTF, file_path):
     :param file_path: path/to/the/file.gtf
     :returns: nothing
     """
+    inGTF['score'] = inGTF['score'].str.replace('nan', '.')
     cols=inGTF.columns.tolist()
     if len(cols) == 9:
         if 'attribute' in cols:
