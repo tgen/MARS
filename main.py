@@ -362,7 +362,7 @@ def writeGTF(inGTF, file_path):
     :param file_path: path/to/the/file.gtf
     :returns: nothing
     """
-    inGTF['score'] = inGTF['score'].str.replace('nan', '.')
+    #inGTF['score'] = inGTF['score'].str.replace('nan', '.')
     cols=inGTF.columns.tolist()
     if len(cols) == 9:
         if 'attribute' in cols:
