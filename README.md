@@ -6,10 +6,10 @@ The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to anal
 
 **Required Software**
 
-Python 3.7.2 or later
-Pandas 1.2.5 or later
-Subreads 2.0.2 or later
-R 3.6.1 or later
+- Python 3.7.2 or later
+- Pandas 1.2.5 or later
+- Subreads 2.0.2 or later
+- R 3.6.1 or later
 
 **Inputs and Outputs**
 
