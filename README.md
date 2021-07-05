@@ -14,9 +14,9 @@ The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to anal
 **Inputs and Outputs**
 
   **Inputs**
-  - Required:
+  **Required:***
    - An input BAM file
-  - Optional:
+  **Optional:**
    - A GTF file (with the -b flag invoked to build a reference GTF using the input GTF, or without the -b flag to use the GTF directly). Defaults to provided GTF if absent.
    - An output path (to specify where the output files should go). Defaults to current working directory if absent.
    - A resource directory (to specify where the resource files are located). Defaults to current working directory if absent.
