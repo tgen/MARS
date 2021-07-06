@@ -497,6 +497,7 @@ if in_gtf is not None and build is True:
 
     call("echo 'Conversion successful'", shell=True)
 
+    # Direct shell to scratch for universal usage capabilities
     call("/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
          "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
          "%s.txt %s" % (out_path, samplename, out_path, samplename, in_bam), shell=True)
