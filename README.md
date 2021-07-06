@@ -94,7 +94,7 @@ working directory.**
 `/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path/ -d 
 /my/resource/path/ -n my_sample_name`
 
-The example above will result in an error because a '/' is used at the end of the paths under the -o and -d flags.
+The example above will result in an error because a '/' is used at the end of the paths under the `-o` and `-d` flags.
 At any point where it is necessary to add a '/' to write or reference a file, the program will do it automatically.
 Including the '/' will likely cause an error such as: `ERROR: The directory '/my/resource/path//HUMAN_IG_DEFAULT.gtf' does not exist.`
 Removing the '/' will fix the error.
