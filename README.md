@@ -1,19 +1,19 @@
 # MMPurityChecker
 
-**Introduction**
+## Introduction
 
 The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to analyze RNAseq data from multiple myeloma tumor samples to assess their purity. It is designed for use as a command-line tool.
 
-**Required Software**
+## Required Software
 
 - Python 3.7.2 or later
 - Pandas 1.2.5 or later
 - Subreads 2.0.2 or later
 - R 3.6.1 or later
 
-**Inputs and Outputs**
+## Inputs and Outputs
 
-  **Inputs**
+ ### Inputs
   
   **Required:**
   
@@ -25,31 +25,51 @@ The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to anal
    - An output path (to specify where the output files should go). Defaults to current working directory if absent.
    - A resource directory (to specify where the resource files are located). Defaults to current working directory if absent.
    - A name for the sample. Defaults to the name of the input BAM if absent.
-   - The -b option. Invoke to build the reference GTF. Must be used in tandem with the input GTF.
+   - The -b flag. Invoke to build the reference GTF. Must be used in tandem with the input GTF.
 
-**Biological Theory Behind Design**
+### Outputs
 
-Multiple Myeloma (MM) is a cancer of plasma cells, a type of white blood cell responsible for producing a single unique immunoglobulin (IG). Experimental data show that it is extremely rare for mutations in oncogenes causing uncontrolled cell growth and mutations in genes responsible for IG production to overlap. Consequently, a 100% pure myeloma sample should theoretically exhibit production of only one IG RNA sequence, with additional IG RNA serving as an indicator of decreased purity. Furthermore, production of RNA associated with genes *downregulated* in plasma cells should serve as an additional indicator of contamination. This software uses the Subreads tool featureCounts to obtain RNA counts corresponding to IG genes and known contaminants, and graphs the output to provide an indication of sample purity.
+- Two R plots showing clonality of sample.
+- One text file containing numerical results.
+- One reference GTF (if -b is invoked).
 
-**Usage Examples**
+## Biological Theory Behind Design
 
-All examples should be called at the command line.
+Multiple Myeloma (MM) is a cancer of plasma cells, a type of white blood
+cell responsible for producing a single unique immunoglobulin (IG). 
+Experimental data show that it is extremely rare for mutations in oncogenes 
+causing uncontrolled cell growth and mutations in genes responsible for IG 
+production to overlap. Consequently, a 100% pure myeloma sample should 
+theoretically exhibit production of only one IG RNA sequence, with additional 
+IG RNA serving as an indicator of decreased purity. Furthermore, production 
+of RNA associated with genes *downregulated* in plasma cells should serve as 
+an additional indicator of contamination. This software uses the Subreads 
+tool featureCounts to obtain RNA counts corresponding to IG genes and known 
+contaminants, and graphs the output to provide an indication of sample purity.
 
-To build a reference GTF and use it to analyze the BAM file, specifying name, resource directory, and output path:
+## Usage Examples
 
-/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d /my/resource/path -n my_sample_name
+### ***All examples should be called at the command line.***
 
-To use the default GTF, specifying name and output path:
+**To build a reference GTF and use it to analyze the BAM file, specifying 
+name, resource directory, and output path:**
 
-/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -o /my/output/path -d /my/resource/path -n my_sample_name
+`/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d 
+/my/resource/path -n my_sample_name`
 
-To use a custom GTF, with all resources and outputs in the current working directory.
+**To use the default GTF, specifying name and output path:**
 
-/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf
+`/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -o /my/output/path 
+-d /my/resource/path -n my_sample_name`
 
-To use as few inputs as possible:
+**To use a custom GTF, with all resources and outputs in the current 
+working directory.**
 
-/path/to/python/script/main.py -i /path/to/input/BAMfile.bam
+`/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf`
+
+**To use as few inputs as possible:**
+
+`/path/to/python/script/main.py -i /path/to/input/BAMfile.bam`
 
 
 
