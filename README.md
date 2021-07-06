@@ -11,6 +11,13 @@ The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to anal
 - Subreads 2.0.2 or later
 - R 3.6.1 or later
 
+## Required Files
+Downloading the "RESOURCE_FILES" folder from this repository should ensure the user has all 
+necessary files. Once RESOURCE_FILES is placed in a convenient directory, invoking the "-d" 
+flag to the directory as follows should allow the user to run the purity checker as intended:
+`-d my/resource/path/RESOURCE_FILES`
+
+
 ## Inputs and Outputs
 
  ### Inputs
