@@ -49,7 +49,7 @@ contaminants, and graphs the output to provide an indication of sample purity.
 
 ## Usage Examples
 
-***\*NOTE: All examples should be called at the command line.****
+***\*NOTE: All examples should be used at the command line.****
 
 **To build a reference GTF and use it to analyze the BAM file, specifying 
 name, resource directory, and output path:**
