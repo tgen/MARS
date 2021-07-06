@@ -115,5 +115,3 @@ an input GTF using the `-g` flag will fix the error.
 The example above will result in an error because the user has not provided a BAM file for the program to analyze.
 Not using `-i` will likely cause an error such as: `ERROR: argument -i/--input_bam: expected one argument` Including
 an input BAM using the `-i` flag will fix the error.
-
-Hello
