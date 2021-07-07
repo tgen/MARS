@@ -381,7 +381,7 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
                   "TOTAL_LIGHT_VARIABLE", "TOTAL_LIGHT_CONSTANT", "PERCENT_KAPPA", "PERCENT_LAMBDA", "Top1", "Top2",
                   "Mean_Top_Delta", "NonB_Contamination"]
     # This list contains each of the corresponding variables converted to strings so they can be written to text.
-    # TODO: make this the actual sample name # tentatively done
+
     results_list = ["%s" % samplename, str(primaryIGHC[0]), str(primaryIGHC[1]), str(primaryIGHC[2]), str(primaryIGHC[4]),
                     str(primaryIGHV[0]), str(primaryIGHV[1]), str(primaryIGHV[2]), str(primaryIGHV[4]),
                     str(primaryIGLC[0]), str(primaryIGLC[1]), str(primaryIGLC[2]), str(primaryIGLC[4]),

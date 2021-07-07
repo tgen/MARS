@@ -31,7 +31,7 @@ tumor samples to assess their purity. It is designed for use as a command-line t
 
 - Two R plots showing clonality of sample.
 - One text file containing numerical results.
-- One reference GTF (if -b is invoked).
+- One reference GTF (if `-b` is invoked).
 
 ## Required Software
 
@@ -42,7 +42,7 @@ tumor samples to assess their purity. It is designed for use as a command-line t
 
 ## Required Files
 Downloading the "RESOURCE_FILES" folder from this repository should ensure the user has all 
-necessary files. Once RESOURCE_FILES is placed in a convenient directory, invoking the "-d" 
+necessary files. Once RESOURCE_FILES is placed in a convenient directory, invoking the `-d` 
 flag to the directory as follows should allow the user to run the purity checker as intended:
 `-d my/resource/path/RESOURCE_FILES`
 
@@ -94,10 +94,10 @@ working directory.**
 `/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path/ -d 
 /my/resource/path/ -n my_sample_name`
 
-The example above will result in an error because a '/' is used at the end of the paths under the `-o` and `-d` flags.
-At any point where it is necessary to add a '/' to write or reference a file, the program will do it automatically.
-Including the '/' will likely cause an error such as: `ERROR: The directory '/my/resource/path//HUMAN_IG_DEFAULT.gtf' does not exist.`
-Removing the '/' will fix the error.
+The example above will result in an error because a `/` is used at the end of the paths under the `-o` and `-d` flags.
+At any point where it is necessary to add a `/` to write or reference a file, the program will do it automatically.
+Including the `/` will likely cause an error such as: `ERROR: The directory '/my/resource/path//HUMAN_IG_DEFAULT.gtf' does not exist.`
+Removing the `/` will fix the error.
 
 **Incorrect use of `-b` flag:**
 
@@ -113,5 +113,5 @@ an input GTF using the `-g` flag will fix the error.
 /my/resource/path -n my_sample_name`
 
 The example above will result in an error because the user has not provided a BAM file for the program to analyze.
-Not using `-i` will likely cause an error such as: `ERROR: argument -i/--input_bam: expected one argument` Including
+Not using `-i` will likely cause an error such as: `ERROR: argument -i/--input_bam: expected one argument`. Including
 an input BAM using the `-i` flag will fix the error.
