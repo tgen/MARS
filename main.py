@@ -532,7 +532,7 @@ else:
 interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % samplename)
 
 # Call the R script to produce the visual outputs
-call('R <%s/igh_graph.R --no-save' % out_path, shell=True)
+call('R <%s/igh_graph.R --no-save' % resource_directory, shell=True)
 
 
 
