@@ -332,8 +332,8 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
     Graph_IgH.columns = ['CommonName', 'Count', 'Percentage', 'TotalFrequency', 'Locus', 'ElementSize']
 
     # Write these tables to a tab-delimited text file. R will use these files to plot
-    Graph_IgH.to_csv(r'%s/Graph_IgH.txt' % filepath, sep='\t', float_format='%.12f', index=False)
-    Graph_IgL.to_csv(r'%s/Graph_IgL.txt' % filepath, sep='\t', float_format='%.12f', index=False)
+    Graph_IgH.to_csv(r'%s/Graph_IgH.txt' % resource_directory, sep='\t', float_format='%.12f', index=False)
+    Graph_IgL.to_csv(r'%s/Graph_IgL.txt' % resource_directory, sep='\t', float_format='%.12f', index=False)
 
     # This function returns a list of primary information from the input dataframe, e.g. when given IGHC_Calc, etc.
     # it will extract the two most-read genes, their frequencies, and the difference in their frequencies.
@@ -534,6 +534,7 @@ interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % sampl
 # Call the R script to produce the visual outputs
 call('R <%s/igh_graph.R --no-save' % resource_directory, shell=True)
 
+# os.remove(r'%s.csv' % file_path)
 
 
 
