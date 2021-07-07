@@ -402,7 +402,7 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
         resultstextfile.write(element + "\t")
     resultstextfile.close()
 
-    titletextfile = open(r"%s/title.txt" % filepath, "w")
+    titletextfile = open(r"%s/title.txt" % resource_directory, "w")
     titletextfile.write("Percent Ig = %s ; Kappa/(K+L) = %s ; Lambda/(K+L) = %s ; Non B Contamination = %s"
                         % (str(round(Percent_IG,4)), str(round(Percent_Kappa,4)), str(round(Percent_Lambda,4)), str(geomean)))
     titletextfile.close()
