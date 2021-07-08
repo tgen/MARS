@@ -3,7 +3,7 @@
 ## Introduction
 
 The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to analyze RNAseq data from multiple myeloma 
-tumor samples to assess their purity. It is designed for use as a command-line tool.
+tumor samples to assess their purity. It is designed for use as a command line tool.
 
 ## Inputs, Outputs, and Corresponding Flags
 
