@@ -533,7 +533,7 @@ interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % sampl
 
 
 # Call the R script to produce the visual outputs
-call('R <%s/igh_graph2.R --no-save %s %s' % (resource_directory, resource_directory, out_path), shell=True)
+call('R <%s/igh_graph2.R --no-save %s %s %s' % (resource_directory, resource_directory, out_path, samplename), shell=True)
 
 # os.remove(r'%s.csv' % file_path)
 
