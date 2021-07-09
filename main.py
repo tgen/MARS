@@ -319,7 +319,7 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
     IGHV_Calc = generate_calc_table(IGHVdf, Total_IGHV_Reads, 'IGHV')
     IGHC_Calc = generate_calc_table(IGHCdf, Total_IGHC_Reads, 'IGHC')
     IGKV_Calc = generate_calc_table(IGKVdf, Total_Light_Variable, 'IGKV')
-    IGKC_Calc = generate_calc_table(IGKCdf, Total_Light_Constant, 'IGKC')
+    IGKC_Calc = generate_calc_table(IGKCdf, Total_Light_Constant, 'IGLC')
     IGLV_Calc = generate_calc_table(IGLVdf, Total_Light_Variable, 'IGLV')
     IGLC_Calc = generate_calc_table(IGLCdf, Total_Light_Constant, 'IGLC')
 
