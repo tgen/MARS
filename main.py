@@ -36,6 +36,11 @@ parser.add_argument('-o', '--output_path',
 parser.add_argument('-b', '--build_files',
                     action='store_true',
                     help='Include -b if you would like to build files, otherwise typing -b is unnecessary')
+# Add input argument for option to keep temporary files. Stored as true for use in decision tree later on.
+parser.add_argument('-k', '--keep_temp',
+                    action='store_true',
+                    help='Include -k if you would like to keep the temporary files. Ignore to remove temporary files '
+                         'once the program is finished')
 # Add input argument for sample name. If none is provided, the name of the BAM file will be used.
 parser.add_argument('-n', '--sample_name',
                     help='Desired name for the sample and associated files. Defaults to the same of the BAM file')
@@ -56,6 +61,7 @@ out_path = args.output_path
 in_gtf = args.input_gtf
 in_bam = args.input_bam
 build = args.build_files
+keep_temp = args.keep_temp
 samplename = args.sample_name
 resource_directory = args.resource_directory
 
@@ -535,9 +541,19 @@ interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % sampl
 # Call the R script to produce the visual outputs
 call('R <%s/igh_graph2.R --no-save %s %s %s' % (resource_directory, resource_directory, out_path, samplename), shell=True)
 
-os.remove(r'%s/Graph_IgH.txt' % resource_directory)
-os.remove(r'%s/Graph_IgL.txt' % resource_directory)
-os.remove(r'%s/title.txt' % resource_directory)
+
+if keep_temp is True:
+    pass
+elif keep_temp is False and build is True:
+    os.remove(r'%s/Graph_IgH.txt' % resource_directory)
+    os.remove(r'%s/Graph_IgL.txt' % resource_directory)
+    os.remove(r'%s/title.txt' % resource_directory)
+    os.remove(r'%s.csv' % out_path)
+else:
+    os.remove(r'%s/Graph_IgH.txt' % resource_directory)
+    os.remove(r'%s/Graph_IgL.txt' % resource_directory)
+    os.remove(r'%s/title.txt' % resource_directory)
+
 sys.exit(0)
 
 
