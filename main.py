@@ -338,8 +338,8 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
     Graph_IgH.columns = ['CommonName', 'Count', 'Percentage', 'TotalFrequency', 'Locus', 'ElementSize']
 
     # Write these tables to a tab-delimited text file. R will use these files to plot
-    Graph_IgH.to_csv(r'%s/Graph_IgH.txt' % resource_directory, sep='\t', float_format='%.12f', index=False)
-    Graph_IgL.to_csv(r'%s/Graph_IgL.txt' % resource_directory, sep='\t', float_format='%.12f', index=False)
+    Graph_IgH.to_csv(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename), sep='\t', float_format='%.12f', index=False)
+    Graph_IgL.to_csv(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename), sep='\t', float_format='%.12f', index=False)
 
     # This function returns a list of primary information from the input dataframe, e.g. when given IGHC_Calc, etc.
     # it will extract the two most-read genes, their frequencies, and the difference in their frequencies.
@@ -408,7 +408,7 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
         resultstextfile.write(element + "\t")
     resultstextfile.close()
 
-    titletextfile = open(r"%s/title.txt" % resource_directory, "w")
+    titletextfile = open(r"%s/%stitle.txt" % (resource_directory, samplename), "w")
     titletextfile.write("Percent Ig = %s ; Kappa/(K+L) = %s ; Lambda/(K+L) = %s ; Non B Contamination = %s"
                         % (str(round(Percent_IG,4)), str(round(Percent_Kappa,4)), str(round(Percent_Lambda,4)), str(geomean)))
     titletextfile.close()
@@ -545,9 +545,9 @@ call('R <%s/igh_graph2.R --no-save %s %s %s' % (resource_directory, resource_dir
 if keep_temp is True:
     pass
 elif keep_temp is False and build is True:
-    os.remove(r'%s/Graph_IgH.txt' % resource_directory)
-    os.remove(r'%s/Graph_IgL.txt' % resource_directory)
-    os.remove(r'%s/title.txt' % resource_directory)
+    os.remove(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename))
+    os.remove(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename))
+    os.remove(r'%s/%stitle.txt' % (resource_directory, samplename))
     os.remove(r'%s.csv' % out_path)
 else:
     os.remove(r'%s/Graph_IgH.txt' % resource_directory)

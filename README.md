@@ -21,6 +21,9 @@ tumor samples to assess their purity. It is designed for use as a command line t
      follows: `-g /path/to/input/GTFfile.gtf`
    - An output path specifying where the output files should go. Defaults to current working directory if absent.
      Corresponds to the `-o` flag as follows: `-o /my/output/path`
+   - The `-k` flag. Invoke to keep temporary files used in the script. The `-k` flag requires no accompanying
+     directory or file and can be typed alone. Users should be warned that invoking the  `-k` flag will leave temporary
+     files in both the output and resource directories.
    - A resource directory specifying where the resource files are located. Defaults to current working directory if absent.
      Corresponds to the `-d` flag as follows: `-d /my/resource/path`
    - A name for the sample. Defaults to the name of the input BAM if absent. 
@@ -68,10 +71,10 @@ contaminants, and graphs the output to provide an indication of sample purity.
 ### Correct Usage Examples
 
 **To build a reference GTF and use it to analyze the BAM file, specifying 
-name, resource directory, and output path:**
+name, resource directory, and output path, while keeping temporary files:**
 
 `/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d 
-/my/resource/path -n my_sample_name`
+/my/resource/path -n my_sample_name -k`
 
 **To use the default GTF, specifying name and output path:**
 
