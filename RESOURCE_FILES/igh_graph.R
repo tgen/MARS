@@ -55,6 +55,6 @@ ggplot(data=IGL, aes(x = CommonName, y = Percentage, fill = TotalFrequency)) +
 	ggtitle(TITLE)
 
 ggsave(file="IGL.png", width = 10, height = 6)
-
+#
 #Quit R Session
 q()
