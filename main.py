@@ -125,7 +125,7 @@ def read_aln_file(filename, threads, reference_genome_fasta=None):
             call("samtools view --threads %s -bh %s -o %s.bam -T %s" % (threads, filename, basename,
                                                                         reference_genome_fasta), shell=True)
             print('Indexing new BAM file')
-            call("samtools index --threads %s -b %s.bam" % (threads, basename), shell=True)
+            call("samtools index -@ %s -b %s.bam" % (threads, basename), shell=True)
             print('Conversion successful')
             return '%s.bam' % basename
         elif extension == ".bam":
