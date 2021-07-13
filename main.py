@@ -54,6 +54,8 @@ parser.add_argument('-d', '--resource_directory',
                     help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
                          'Defaults to current directory.')
 
+reference_genome_fasta = 2
+
 # Generate accessible arguments by calling parse_args
 args = parser.parse_args()
 
@@ -81,18 +83,17 @@ def read_aln_file(self):
     :return: aln read file handle (bamh or alnh)
     """
 
-    extension = os.path.splitext(self.aln_file)[1]
+    extension = os.path.splitext(self)[1]
     try:
         if extension == ".cram":
             if self.reference_genome_fasta is None:
                 raise FileNotFoundError(
                     "ERROR: reading CRAM file requires a Reference Genome Fasta File To be Provided with its FAI index.")
-            return pysam.AlignmentFile(self.aln_file, mode='rc', reference_filename=self.reference_genome_fasta,
-                                       threads=self.threads)
+            return pysam.AlignmentFile(self, mode='rc', reference_filename=reference_genome_fasta)
         elif extension == ".bam":
-            return pysam.AlignmentFile(self.aln_file, mode='rb', threads=self.threads)
+            return pysam.AlignmentFile(self, mode='rb')
         elif extension == ".sam":
-            return pysam.AlignmentFile(self.aln_file, mode='r')
+            return pysam.AlignmentFile(self, mode='r')
         else:
             logger.debug("extension found: " + extension)
             raise Exception("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
