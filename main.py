@@ -511,7 +511,7 @@ def writeGTF(inGTF, file_path):
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
 
-in_bam = read_aln_file(in_bam)
+# in_bam = read_aln_file(in_bam)
 
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
 # the GTF and then processes the input BAM using the new GTF
