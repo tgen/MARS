@@ -4,7 +4,6 @@ import pandas as pd
 import os
 import sys
 import scipy
-import pysam
 from gtfparse import read_gtf
 from subprocess import call
 from scipy import stats
@@ -86,16 +85,18 @@ def read_aln_file(filename, reference_genome_fasta=None):
     """
 
     extension = os.path.splitext(filename)[1]
+    basename = os.path.splitext(filename)[0]
     try:
         if extension == ".cram":
             if reference_genome_fasta is None:
                 raise FileNotFoundError(
                     "ERROR: reading CRAM file requires a Reference Genome Fasta File To be Provided with its FAI index.")
-            return pysam.AlignmentFile(filename, mode='rc', reference_filename=reference_genome_fasta)
+            call("samtools view -bh %s -o %s.bam -T %s" % (filename, basename, reference_genome_fasta), shell=True)
+            return '%s.bam' % basename
         elif extension == ".bam":
-            return pysam.AlignmentFile(filename, mode='rb')
+            return filename
         elif extension == ".sam":
-            return pysam.AlignmentFile(filename, mode='r')
+            return filename
         else:
             sys.exit("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
 
@@ -512,8 +513,7 @@ def writeGTF(inGTF, file_path):
 # ------------------------------------------------------------------------------------------------------------------- #
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
-print(ref_fasta)
-print(input_aln)
+
 in_bam = read_aln_file(input_aln, ref_fasta)
 
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
