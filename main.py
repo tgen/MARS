@@ -22,6 +22,10 @@ parser.add_argument('-i', '--input_bam',
 # Add input argument for GTF file containing regions to isolate.
 parser.add_argument('-g', '--input_gtf',
                     help='GTF to be used in processing')
+parser.add_argument('-t', '--threads',
+                    default=1,
+                    type=int,
+                    help='Number of threads to use. User must make threads available')
 # Add input argument for GTF file containing regions to isolate.
 parser.add_argument('-f', '--reference_fasta',
                     help='Reference genome fasta to be used in processing')
@@ -54,7 +58,6 @@ parser.add_argument('-d', '--resource_directory',
                     help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
                          'Defaults to current directory.')
 
-# reference_genome_fasta = 'hello'
 
 # Generate accessible arguments by calling parse_args
 args = parser.parse_args()
@@ -64,6 +67,7 @@ out_path = args.output_path
 in_gtf = args.input_gtf
 input_aln = args.input_bam
 build = args.build_files
+threads = args.threads
 keep_temp = args.keep_temp
 samplename = args.sample_name
 resource_directory = args.resource_directory
@@ -77,36 +81,6 @@ if samplename is None:
 else:
     pass
 
-
-def read_aln_file(filename, reference_genome_fasta=None):
-    """
-    read the alignment file whether it is a SAM, BAM or CRAM file and returns the bam file handle
-    :return: aln read file handle (bamh or alnh)
-    """
-
-    extension = os.path.splitext(filename)[1]
-    basename = os.path.splitext(filename)[0]
-    try:
-        if extension == ".cram":
-            if reference_genome_fasta is None:
-                raise FileNotFoundError(
-                    "ERROR: reading CRAM file requires a Reference Genome Fasta File To be Provided with its FAI index.")
-            print('Conversion to BAM required: running samtools')
-            call("samtools view -bh %s -o %s.bam -T %s" % (filename, basename, reference_genome_fasta), shell=True)
-            print('Conversion successful')
-            return '%s.bam' % basename
-        elif extension == ".bam":
-            return filename
-        elif extension == ".sam":
-            return filename
-        else:
-            sys.exit("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
-
-    except FileNotFoundError as fnf:
-        sys.exit(fnf)
-
-    except Exception as e:
-        sys.exit(e)
 
 
 
@@ -133,6 +107,37 @@ default_component_list = ['IG_V', 'IG_C']
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
 # ------------------------------------------------------------------------------------------------------------------- #
+
+def read_aln_file(filename, threads, reference_genome_fasta=None):
+    """
+    read the alignment file whether it is a SAM, BAM or CRAM file and returns the bam file handle
+    :return: aln read file handle (bamh or alnh)
+    """
+
+    extension = os.path.splitext(filename)[1]
+    basename = os.path.splitext(filename)[0]
+    try:
+        if extension == ".cram":
+            if reference_genome_fasta is None:
+                raise FileNotFoundError(
+                    "ERROR: reading CRAM file requires a Reference Genome Fasta File To be Provided with its FAI index.")
+            print('Conversion to BAM required: running samtools')
+            call("samtools view --threads %s -bh %s -o %s.bam -T %s" % (threads-1, filename, basename,
+                                                                        reference_genome_fasta), shell=True)
+            print('Conversion successful')
+            return '%s.bam' % basename
+        elif extension == ".bam":
+            return filename
+        elif extension == ".sam":
+            return filename
+        else:
+            sys.exit("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
+
+    except FileNotFoundError as fnf:
+        sys.exit(fnf)
+
+    except Exception as e:
+        sys.exit(e)
 
 
 def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=default_chromosome_list,
@@ -516,7 +521,7 @@ def writeGTF(inGTF, file_path):
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
 
-in_bam = read_aln_file(input_aln, ref_fasta)
+in_bam = read_aln_file(input_aln, threads, ref_fasta)
 
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
 # the GTF and then processes the input BAM using the new GTF
@@ -553,8 +558,8 @@ if in_gtf is not None and build is True:
 
     # Direct shell to scratch for universal usage capabilities
     call("/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
-         "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
-         "%s.txt %s" % (out_path, samplename, out_path, samplename, in_bam), shell=True)
+         "-O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
+         "%s.txt %s" % (threads, out_path, samplename, out_path, samplename, in_bam), shell=True)
 
 # Case where the user wants to build a new GTF but no starting GTF is provided. In this case, an error is thrown, since
 # there will be nothing to build from
@@ -569,8 +574,8 @@ elif in_gtf is not None and build is False:
 
     # Run featurecounts from the shell
     call("/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
-         "-O -s 0 -Q 10 -T 4 -C -p -a %s -o %s/"
-         "%s.txt %s" % (in_gtf, out_path, samplename, in_bam), shell=True)
+         "-O -s 0 -Q 10 -T %s -C -p -a %s -o %s/"
+         "%s.txt %s" % (threads, in_gtf, out_path, samplename, in_bam), shell=True)
 
 # Case where no inputs except BAM are given and the build command is not called. In this case, it is assumed that the
 # user wants to use the default GTF provided with the script.
@@ -578,8 +583,8 @@ else:
 
     # Run featurecounts from the shell
     call("/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
-         "-O -s 0 -Q 10 -T 4 -C -p -a %s/%s.gtf -o %s/"
-         "%s.txt %s" % (resource_directory, default_gtf, out_path, samplename, in_bam), shell=True)
+         "-O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
+         "%s.txt %s" % (threads, resource_directory, default_gtf, out_path, samplename, in_bam), shell=True)
 
 # Run the interpret_featurecounts function on featureCounts's output
 interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % samplename)
