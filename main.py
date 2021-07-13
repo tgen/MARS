@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 import pandas as pd
-import numpy as np
 import os
 import sys
 import scipy
 import pysam
-import logger
 from gtfparse import read_gtf
 from subprocess import call
 from scipy import stats
@@ -54,7 +52,7 @@ parser.add_argument('-d', '--resource_directory',
                     help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
                          'Defaults to current directory.')
 
-reference_genome_fasta = 2
+reference_genome_fasta = 'hello'
 
 # Generate accessible arguments by calling parse_args
 args = parser.parse_args()
@@ -95,14 +93,14 @@ def read_aln_file(self):
         elif extension == ".sam":
             return pysam.AlignmentFile(self, mode='r')
         else:
-            logger.debug("extension found: " + extension)
-            raise Exception("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
+            sys.exit("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
+
     except FileNotFoundError as fnf:
-        logger.exception(fnf)
-        exit(2)
+        sys.exit(fnf)
+
     except Exception as e:
-        logger.exception(e)
-        exit(2)
+        sys.exit(e)
+
 
 
 # ----------------------------------------- #
