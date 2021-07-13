@@ -52,7 +52,7 @@ parser.add_argument('-d', '--resource_directory',
                     help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
                          'Defaults to current directory.')
 
-reference_genome_fasta = 'hello'
+# reference_genome_fasta = 'hello'
 
 # Generate accessible arguments by calling parse_args
 args = parser.parse_args()
