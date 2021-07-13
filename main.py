@@ -63,7 +63,7 @@ args = parser.parse_args()
 # Rename each input to something shorter and more intuitive for later use in the code.
 out_path = args.output_path
 in_gtf = args.input_gtf
-in_bam = args.input_bam
+input_aln = args.input_bam
 build = args.build_files
 keep_temp = args.keep_temp
 samplename = args.sample_name
@@ -74,7 +74,7 @@ ref_fasta = args.reference_fasta
 # file name from the input path and os.splitext to split the name into ('filename', 'extension'),
 # e.g. ('example', '.txt). The [0] accesses the first string in that output (the file name w/o extension).
 if samplename is None:
-    samplename = os.path.splitext(os.path.basename(in_bam))[0]
+    samplename = os.path.splitext(os.path.basename(input_aln))[0]
 else:
     pass
 
@@ -512,8 +512,8 @@ def writeGTF(inGTF, file_path):
 # ------------------------------------------------------------------------------------------------------------------- #
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
-
-in_bam = read_aln_file(in_bam, ref_fasta)
+print('ref fasta')
+in_bam = read_aln_file(input_aln, ref_fasta)
 
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
 # the GTF and then processes the input BAM using the new GTF
