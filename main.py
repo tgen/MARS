@@ -23,6 +23,9 @@ parser.add_argument('-i', '--input_bam',
 # Add input argument for GTF file containing regions to isolate.
 parser.add_argument('-g', '--input_gtf',
                     help='GTF to be used in processing')
+# Add input argument for GTF file containing regions to isolate.
+parser.add_argument('-f', '--reference_fasta',
+                    help='Reference genome fasta to be used in processing')
 # Add input argument for output path. If no argument or only a -o is provided, program defaults
 # to current working directory.
 parser.add_argument('-o', '--output_path',
@@ -65,6 +68,7 @@ build = args.build_files
 keep_temp = args.keep_temp
 samplename = args.sample_name
 resource_directory = args.resource_directory
+ref_fasta = args.reference_fasta
 
 # This statement sets the sample name to the name of the BAM if no name is provided, using os.basename to extract the
 # file name from the input path and os.splitext to split the name into ('filename', 'extension'),
@@ -75,7 +79,7 @@ else:
     pass
 
 
-def read_aln_file(filename):
+def read_aln_file(filename, reference_genome_fasta):
     """
     read the alignment file whether it is a SAM, BAM or CRAM file and returns the bam file handle
     :return: aln read file handle (bamh or alnh)
@@ -509,7 +513,7 @@ def writeGTF(inGTF, file_path):
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
 
-in_bam = read_aln_file(in_bam)
+in_bam = read_aln_file(in_bam, ref_fasta)
 
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
 # the GTF and then processes the input BAM using the new GTF
