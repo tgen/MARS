@@ -508,11 +508,6 @@ def writeGTF(inGTF, file_path):
                 line[4]) + '\t' + str(line[5]) + '\t' + str(line[6]) + '\t' + str(line[7]) + '\t' + str(
                 line[8]) + '\n'))
     print('GTF conversion complete')
-    # This removes the CSV that was made earlier, since it's only necessary to write the GTF. If you want to keep the
-    # CSV, feel free to disable/delete this line.
-    print('Removing CSV')
-    os.remove(r'%s.csv' % file_path)
-    print('CSV Removed')
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
