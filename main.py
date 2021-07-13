@@ -58,7 +58,6 @@ parser.add_argument('-d', '--resource_directory',
                     help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
                          'Defaults to current directory.')
 
-
 # Generate accessible arguments by calling parse_args
 args = parser.parse_args()
 
@@ -80,9 +79,6 @@ if samplename is None:
     samplename = os.path.splitext(os.path.basename(input_aln))[0]
 else:
     pass
-
-
-
 
 # ----------------------------------------- #
 #  DEFAULTS
@@ -184,7 +180,7 @@ def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=default_chromo
     # Create a copy of the dataframe to search against the contaminant list.
     contaminant_dataframe = dataframe.applymap(str)
     # Isolate rows where the "gene_biotype" column starts with "IG_" and "feature" starts with "exon"
-    dataframe = dataframe[dataframe['gene_biotype'].str.match('IG_') & dataframe['feature'].str.match('exon')]
+    dataframe = dataframe[dataframe['gene_biotype'].str.match('IG_')] #& dataframe['feature'].str.match('exon')]
     # Isolate all rows where "gene_biotype" DOES NOT contain "pseudogene"
     dataframe = dataframe[~dataframe.gene_biotype.str.contains("pseudogene")]
     # Isolate all rows where the gene biotype matches the desired regions (IG_C, IG_V, etc)
