@@ -79,7 +79,7 @@ else:
     pass
 
 
-def read_aln_file(filename, reference_genome_fasta):
+def read_aln_file(filename, reference_genome_fasta=None):
     """
     read the alignment file whether it is a SAM, BAM or CRAM file and returns the bam file handle
     :return: aln read file handle (bamh or alnh)
@@ -88,7 +88,7 @@ def read_aln_file(filename, reference_genome_fasta):
     extension = os.path.splitext(filename)[1]
     try:
         if extension == ".cram":
-            if filename.reference_genome_fasta is None:
+            if reference_genome_fasta is None:
                 raise FileNotFoundError(
                     "ERROR: reading CRAM file requires a Reference Genome Fasta File To be Provided with its FAI index.")
             return pysam.AlignmentFile(filename, mode='rc', reference_filename=reference_genome_fasta)
