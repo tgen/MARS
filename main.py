@@ -122,8 +122,10 @@ def read_aln_file(filename, threads, reference_genome_fasta=None):
                 raise FileNotFoundError(
                     "ERROR: reading CRAM file requires a Reference Genome Fasta File To be Provided with its FAI index.")
             print('Conversion to BAM required: running samtools')
-            call("samtools view --threads %s -bh %s -o %s.bam -T %s" % (threads-1, filename, basename,
+            call("samtools view --threads %s -bh %s -o %s.bam -T %s" % (threads, filename, basename,
                                                                         reference_genome_fasta), shell=True)
+            print('Indexing new BAM file')
+            call("samtools index --threads %s -b %s.bam" % (threads, basename), shell=True)
             print('Conversion successful')
             return '%s.bam' % basename
         elif extension == ".bam":
