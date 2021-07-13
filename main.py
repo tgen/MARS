@@ -512,9 +512,10 @@ def writeGTF(inGTF, file_path):
 # ------------------------------------------------------------------------------------------------------------------- #
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
-print('ref fasta')
+print(ref_fasta)
+print(input_aln)
 in_bam = read_aln_file(input_aln, ref_fasta)
-
+sys.exit()
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
 # the GTF and then processes the input BAM using the new GTF
 if in_gtf is not None and build is True:
