@@ -591,7 +591,7 @@ if keep_temp is True:
 elif keep_temp is False and build is True:
     if os.path.splitext(input_aln)[1] == ".cram":
         os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
-        os.remove(r'%s.bai' % (os.path.splitext(input_aln)[0]))
+        os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
     os.remove(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename))
     os.remove(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename))
     os.remove(r'%s/%stitle.txt' % (resource_directory, samplename))
