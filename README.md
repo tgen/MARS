@@ -11,7 +11,13 @@ tumor samples to assess their purity. It is designed for use as a command line t
   
   **Required:**
   
-   - An input BAM file. Corresponds to the `-i` flag as follows: `-i /path/to/input/BAMfile.bam`
+   - An input file, which can be in BAM, CRAM, or SAM format. If in CRAM format, it will be converted to BAM for 
+     analysis, and a BAI index file will be generated. \
+     If in CRAM format, a FASTA file must also be provided using the `-f` flag. \
+     If in CRAM format, a CRAI index file must be present in the 
+     same directory as the CRAM file, and if in BAM format, the same must be true for a BAI index file. 
+     Corresponds to the `-i` flag as follows:
+     `-i /path/to/input/BAMfile.bam` or`-i /path/to/input/SAMfile.sam` or `-i /path/to/input/CRAMfile.cram`
 
   **Optional:**
    - The `-b` flag. Invoke to build the reference GTF from an input GTF. The `-b` flag requires no accompanying
@@ -24,10 +30,14 @@ tumor samples to assess their purity. It is designed for use as a command line t
    - The `-k` flag. Invoke to keep temporary files used in the script. The `-k` flag requires no accompanying
      directory or file and can be typed alone. Users should be warned that invoking the  `-k` flag will leave temporary
      files in both the output and resource directories.
+   - An input FASTA file. If the input file is in CRAM format, an input FASTA must also be provided. Corresponds 
+     to the `-f` flag as follows: `-f /path/to/FASTAfile.fa`  
    - A resource directory specifying where the resource files are located. Defaults to current working directory if absent.
      Corresponds to the `-d` flag as follows: `-d /my/resource/path`
    - A name for the sample. Defaults to the name of the input BAM if absent. 
      Corresponds to the `-n` flag as follows: `-n my_sample_name`
+   - An integer number of threads to use. Default is 1 thread. Corresponds to the `-t` flag as follows:
+     `-t [INT]`, for example `-t 6`
    
 
 ### Outputs
@@ -118,3 +128,13 @@ an input GTF using the `-g` flag will fix the error.
 The example above will result in an error because the user has not provided a BAM file for the program to analyze.
 Not using `-i` will likely cause an error such as: `ERROR: argument -i/--input_bam: expected one argument`. Including
 an input BAM using the `-i` flag will fix the error.
+
+**Missing input FASTA file with CRAM:**
+
+`/path/to/python/script/main.py -i /path/to/input/CRAMfile.cram -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d 
+/my/resource/path -n my_sample_name`
+
+The example above will result in an error because the user has not provided a FASTA file for the program to convert
+the CRAM into a BAM for analysis.
+Not providing a FASTA will likely cause an error such as: `ERROR: reading CRAM file requires a Reference Genome Fasta 
+File To be Provided with its FAI index.`. Including an input FASTA using the `-f` flag will fix the error.
