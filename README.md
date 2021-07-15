@@ -1,11 +1,11 @@
-# MMPurityChecker
+# MARS
 **Primary Developer:** Bertrand Odinet
 
 **Additional Developers:** Dr. Jonathan J. Keats, Christophe Legendre, Bryce Turner
 
 ## Introduction
 
-The MMPurityChecker (Multiple Myeloma Purity Checker) is a tool designed to analyze RNAseq data from multiple myeloma 
+The MARS program (Myeloma Analysis for RNASeq) is a tool designed to analyze RNAseq data from Multiple Myeloma 
 tumor samples to assess their purity. It is designed for use as a command line tool.
 
 ## Inputs, Outputs, and Corresponding Flags
