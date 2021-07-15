@@ -1,0 +1,7 @@
+# NOTE: THE ORDER, FORMATTING, AND NUMBER OF LINES IN THIS TEXT FILE IS IMPORTANT. PLEASE ONLY EDIT LINES NOT DENOTED WITH '#'. KEEP FORMATTING CONVENTIONS. DO NOT INTRODUCE ADDITIONAL LINES, TABS, ETC. AVOID EDITING IN GENERAL UNLESS YOU ARE CONFIDENT YOU KNOW WHAT YOU ARE DOING.
+# The name of the default GTF to use
+HUMAN_IG_DEFAULT
+# The default chromosomes searched when generating the GTF. Note that these will not be the correct chromosomes for mice or other non-human animals.
+2 14 22
+# The default IG components included in the GTF. IG_J is excluded by default due to its minor importance in the context of the purity checker, but can be added if necessary.
+IG_V IG_C
