@@ -77,8 +77,6 @@ ref_fasta = args.reference_fasta
 # e.g. ('example', '.txt). The [0] accesses the first string in that output (the file name w/o extension).
 if samplename is None:
     samplename = os.path.splitext(os.path.basename(input_aln))[0]
-else:
-    pass
 
 # ----------------------------------------- #
 #  DEFAULTS
@@ -91,6 +89,7 @@ default_parameters = DEFAULT_FILE.read().splitlines()
 default_gtf = default_parameters[2]
 default_chromosome_list = default_parameters[4].split()
 default_component_list = default_parameters[6].split()
+featurecounts_path = default_parameters[8]
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -541,9 +540,8 @@ if in_gtf is not None and build is True:
     call("echo 'Conversion successful'", shell=True)
 
     # Direct shell to scratch for universal usage capabilities
-    call("/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
-         "-O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
-         "%s.txt %s" % (threads, out_path, samplename, out_path, samplename, in_bam), shell=True)
+    call("%s -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
+         "%s.txt %s" % (featurecounts_path, threads, out_path, samplename, out_path, samplename, in_bam), shell=True)
 
 # Case where the user wants to build a new GTF but no starting GTF is provided. In this case, an error is thrown, since
 # there will be nothing to build from
@@ -557,18 +555,16 @@ elif in_gtf is None and build is True:
 elif in_gtf is not None and build is False:
 
     # Run featurecounts from the shell
-    call("/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
-         "-O -s 0 -Q 10 -T %s -C -p -a %s -o %s/"
-         "%s.txt %s" % (threads, in_gtf, out_path, samplename, in_bam), shell=True)
+    call("%s -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s -o %s/"
+         "%s.txt %s" % (featurecounts_path, threads, in_gtf, out_path, samplename, in_bam), shell=True)
 
 # Case where no inputs except BAM are given and the build command is not called. In this case, it is assumed that the
 # user wants to use the default GTF provided with the script.
 else:
 
     # Run featurecounts from the shell
-    call("/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts -g gene_name "
-         "-O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
-         "%s.txt %s" % (threads, resource_directory, default_gtf, out_path, samplename, in_bam), shell=True)
+    call("%s -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
+         "%s.txt %s" % (featurecounts_path, threads, resource_directory, default_gtf, out_path, samplename, in_bam), shell=True)
 
 # Run the interpret_featurecounts function on featureCounts's output
 interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % samplename)
