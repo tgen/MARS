@@ -122,7 +122,9 @@ a specific reason to contradict the recommendations below.
   
   
 - **The path to featureCounts:** The program will search in this path to launch Subreads's featureCounts tool. To 
-  change, replace the path in line 9 of the USER_DEFAULTS file with an alternate path. The file comes with a path
+  change, replace the path in line 9 of the USER_DEFAULTS file with an alternate path. 
+  
+  The file comes with a path
   that is functional within the Phoenix Translational Genomics Research Institute (TGen), where this program was 
   developed.
 
