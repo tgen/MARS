@@ -83,23 +83,14 @@ else:
 # ----------------------------------------- #
 #  DEFAULTS
 # ----------------------------------------- #
-# This section contains several user-definable defaults for the program. They are the name of the default GTF,
-# chromosomes to search, and IG components to consider, respectively.
-default_gtf = 'HUMAN_IG_DEFAULT'
-default_chromosome_list = ['2', '14', '22']
-default_component_list = ['IG_V', 'IG_C']
-
-
-##########################################
-# TESTING GROUND
-##########################################
-
-# out_path = r'/Users/bodinet/Downloads'
-# in_gtf = r'/Users/bodinet/Downloads/Homo_sapiens.GRCh38.98.ucsc.gtf'
-# in_bam = 'update2'
-# build = 'Y'
-##########################################
-
+# This section reads in several user-definable defaults for the program. They are the name of the default GTF,
+# chromosomes to search, and IG components to consider, respectively. They can be changed by editing the
+# DEFAULT_FILE.txt file in the resource directory.
+DEFAULT_FILE = open(r'%s/USER_DEFAULTS.txt' % resource_directory, 'r')
+default_parameters = DEFAULT_FILE.read().splitlines()
+default_gtf = default_parameters[2]
+default_chromosome_list = default_parameters[4].split()
+default_component_list = default_parameters[6].split()
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -603,7 +594,7 @@ else:
     os.remove(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename))
     os.remove(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename))
     os.remove(r'%s/%stitle.txt' % (resource_directory, samplename))
-#
+
 sys.exit(0)
 
 ##############################################################
