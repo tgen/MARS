@@ -2,7 +2,7 @@
 
 # Primary Developer: Bertrand Odinet
 
-# Additional Developers: Dr. Jonathan J. Keats, Dr. Christophe Legendre, Bryce Turner
+# Additional Developers: Dr. Jonathan J. Keats, Dr. Christophe Legendre, Bryce Turner, Daniel Enriquez
 
 import argparse
 import pandas as pd
