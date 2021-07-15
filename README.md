@@ -11,32 +11,32 @@ tumor samples to assess their purity. It is designed for use as a command line t
   
   **Required:**
   
-   - An input file, which can be in BAM, CRAM, or SAM format. If in CRAM format, it will be converted to BAM for 
+   - `-i` An input file, which can be in BAM, CRAM, or SAM format. If in CRAM format, it will be converted to BAM for 
      analysis, and a BAI index file will be generated. \
      If in CRAM format, a FASTA file must also be provided using the `-f` flag. \
      If in CRAM format, a CRAI index file must be present in the 
      same directory as the CRAM file, and if in BAM format, the same must be true for a BAI index file. 
      Corresponds to the `-i` flag as follows:
-     `-i /path/to/input/BAMfile.bam` or`-i /path/to/input/SAMfile.sam` or `-i /path/to/input/CRAMfile.cram`
+     `-i /path/to/input/BAMfile.bam` or `-i /path/to/input/SAMfile.sam` or `-i /path/to/input/CRAMfile.cram`
 
   **Optional:**
-   - The `-b` flag. Invoke to build the reference GTF from an input GTF. The `-b` flag requires no accompanying
+   - `-b` The `-b` flag. Invoke to build the reference GTF from an input GTF. The `-b` flag requires no accompanying
      directory or file and can be typed alone, but if invoked, it must be used in tandem with the `-g` flag and an input GTF.  
-   - A GTF file. If absent, the program uses the default GTF in RESOURCE_FILES. **If provided _without_ the `-b` 
+   - `-g` A GTF file. If absent, the program uses the default GTF in RESOURCE_FILES. **If provided _without_ the `-b` 
      flag invoked, the provided GTF will be used instead of the default.** Corresponds to the `-g` flag as 
      follows: `-g /path/to/input/GTFfile.gtf`
-   - An output path specifying where the output files should go. Defaults to current working directory if absent.
+   - `-o` An output path specifying where the output files should go. Defaults to current working directory if absent.
      Corresponds to the `-o` flag as follows: `-o /my/output/path`
-   - The `-k` flag. Invoke to keep temporary files used in the script. The `-k` flag requires no accompanying
+   - `-k` The `-k` flag. Invoke to keep temporary files used in the script. The `-k` flag requires no accompanying
      directory or file and can be typed alone. Users should be warned that invoking the  `-k` flag will leave temporary
      files in both the output and resource directories.
-   - An input FASTA file. If the input file is in CRAM format, an input FASTA must also be provided. Corresponds 
+   - `-f` An input FASTA file. If the input file is in CRAM format, an input FASTA must also be provided. Corresponds 
      to the `-f` flag as follows: `-f /path/to/FASTAfile.fa`  
-   - A resource directory specifying where the resource files are located. Defaults to current working directory if absent.
+   - `-d` A resource directory specifying where the resource files are located. Defaults to current working directory if absent.
      Corresponds to the `-d` flag as follows: `-d /my/resource/path`
-   - A name for the sample. Defaults to the name of the input BAM if absent. 
+   - `-n` A name for the sample. Defaults to the name of the input BAM/CRAM/SAM if absent. 
      Corresponds to the `-n` flag as follows: `-n my_sample_name`
-   - An integer number of threads to use. Default is 1 thread. Corresponds to the `-t` flag as follows:
+   - `-t` An integer number of threads to use. Default is 1 thread. Corresponds to the `-t` flag as follows:
      `-t [INT]`, for example `-t 6`
    
 
@@ -52,6 +52,7 @@ tumor samples to assess their purity. It is designed for use as a command line t
 - Pandas 1.2.5 or later
 - Subreads 2.0.2 or later
 - R 3.6.1 or later
+- Samtools 1.9 or later (tested on 1.10)
 
 ## Required Files
 Downloading the "RESOURCE_FILES" folder from this repository should ensure the user has all 
@@ -80,21 +81,27 @@ contaminants, and graphs the output to provide an indication of sample purity.
 
 ### Correct Usage Examples
 
-**To build a reference GTF and use it to analyze the BAM file, specifying 
-name, resource directory, and output path, while keeping temporary files:**
+**To build a reference GTF and use it to analyze a CRAM file, specifying 
+name, resource directory, and output path, while keeping temporary files, and using 8 threads:**
+
+`/path/to/python/script/main.py -i /path/to/input/CRAMfile.cram -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d 
+/my/resource/path -n my_sample_name -k -t 8 -f /path/to/input/FASTAfile.fa`
+
+**To build a reference GTF and use it to analyze a BAM file, specifying 
+name, resource directory, and output path, removing temporary files:**
 
 `/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d 
-/my/resource/path -n my_sample_name -k`
+/my/resource/path -n my_sample_name`
 
-**To use the default GTF, specifying name and output path:**
+**To use the default GTF on a BAM, specifying name and output path:**
 
 `/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -o /my/output/path 
 -d /my/resource/path -n my_sample_name`
 
-**To use a custom GTF, with all resources and outputs in the current 
+**To use a custom GTF on a SAM file, with all resources and outputs in the current 
 working directory.**
 
-`/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf`
+`/path/to/python/script/main.py -i /path/to/input/SAMfile.sam -g /path/to/input/GTFfile.gtf`
 
 **To use as few inputs as possible:**
 
