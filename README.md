@@ -1,4 +1,7 @@
 # MMPurityChecker
+**Primary Developer:** Bertrand Odinet
+
+**Additional Developers:** Dr. Jonathan J. Keats, Christophe Legendre, Bryce Turner
 
 ## Introduction
 
@@ -21,21 +24,35 @@ tumor samples to assess their purity. It is designed for use as a command line t
 
   **Optional:**
    - `-b` The `-b` flag. Invoke to build the reference GTF from an input GTF. The `-b` flag requires no accompanying
-     directory or file and can be typed alone, but if invoked, it must be used in tandem with the `-g` flag and an input GTF.  
+     directory or file and can be typed alone, but if invoked, it must be used in tandem with the `-g` flag and an input GTF.
+     
+
    - `-g` A GTF file. If absent, the program uses the default GTF in RESOURCE_FILES. **If provided _without_ the `-b` 
      flag invoked, the provided GTF will be used instead of the default.** Corresponds to the `-g` flag as 
      follows: `-g /path/to/input/GTFfile.gtf`
+     
+
    - `-o` An output path specifying where the output files should go. Defaults to current working directory if absent.
      Corresponds to the `-o` flag as follows: `-o /my/output/path`
+     
+
    - `-k` The `-k` flag. Invoke to keep temporary files used in the script. The `-k` flag requires no accompanying
      directory or file and can be typed alone. Users should be warned that invoking the  `-k` flag will leave temporary
      files in both the output and resource directories.
+     
+
    - `-f` An input FASTA file. If the input file is in CRAM format, an input FASTA must also be provided. Corresponds 
      to the `-f` flag as follows: `-f /path/to/FASTAfile.fa`  
+     
+
    - `-d` A resource directory specifying where the resource files are located. Defaults to current working directory if absent.
      Corresponds to the `-d` flag as follows: `-d /my/resource/path`
+     
+
    - `-n` A name for the sample. Defaults to the name of the input BAM/CRAM/SAM if absent. 
      Corresponds to the `-n` flag as follows: `-n my_sample_name`
+     
+
    - `-t` An integer number of threads to use. Default is 1 thread. Corresponds to the `-t` flag as follows:
      `-t [INT]`, for example `-t 6`
    
@@ -60,6 +77,54 @@ necessary files. Once RESOURCE_FILES is placed in a convenient directory, invoki
 flag to the directory as follows should allow the user to run the purity checker as intended:
 `-d my/resource/path/RESOURCE_FILES`
 
+## Managing Program Defaults
+The purity checker uses a file called USER_DEFAULTS.txt to manage default preferences that are unlikely to change
+frequently enough to warrant a command line argument, but should still be editable without rewriting actual lines 
+of code.
+
+
+***PLEASE NOTE:*** As specified in the file itself, the layout, formatting, and number of lines in USER_DEFAULTS.txt are each important 
+for ensuring correct processing. Please abide by the recommendations here when editing the default file, unless you 
+intend to rewrite the code itself, or otherwise are extremely confident in your understanding of the program and have
+a specific reason to contradict the recommendations below.
+
+
+**The defaults available to change in this file are as follows:**
+
+- **The name of the default GTF:** This is the GTF that will be used if no GTF is specified at the command line. To 
+  change, load a GTF of your preference into your resource directory, and replace 'HUMAN_IG_DEFAULT' in line 3 of the 
+  USER_DEFAULTS file with the name of your GTF. The `.gtf` extension ***SHOULD NOT*** be included.
+  
+  The RESOURCE_FILES folder comes with a pre-built GTF called HUMAN_IG_DEFAULT.gtf, containing human IGs and known contaminants,
+  based on the GRCh38 human GTF from the Genome Reference Consortium. As of July 2021, this was the most up-to-date 
+  version available.
+  
+
+- **The default chromosomes:** If building a new GTF, these are the chromosomes that will be searched in the new GTF
+  for Immunoglobulin genes. To edit, simply add, subtract or replace the numbers in line 5 of the 
+  USER_DEFAULTS file with the number of the chromosome(s) you want to include. Chromosome numbers should be 
+  space-separated integers only, with no additional characters.
+  
+  By default, chromosomes 2, 14, and 22 are listed in the file, as these are the chromosomes where human IG genes are found.
+  These are not the correct chromosomes for other animals, and should be changed before attempting to build an IG GTF 
+  for a different organism.
+  
+
+- **The default Immunoglobulin components:** If building a new GTF, these are the specific sub-type of IG gene that will
+  be included. To edit, simply add, subtract or replace the strings in line 7 of the 
+  USER_DEFAULTS file with the type of components you want to include. Components should be 
+  space-separated strings only, with no additional characters.
+  
+  By default, IG_V and IG_C are listed in the file, corresponding to genes for all IG variable and IG constant regions.
+  IG_J (joining) is excluded because it does little to help assess purity. These strings correspond to the naming 
+  convention in the source GTF, and are not guaranteed to be universal. Consequently, when building a new GTF, the user
+  should check the gene biotype tag to ensure the naming convention has not changed.
+  
+  
+- **The path to featureCounts:** The program will search in this path to launch Subreads's featureCounts tool. To 
+  change, replace the path in line 9 of the USER_DEFAULTS file with an alternate path. The file comes with a path
+  that is functional within the Phoenix Translational Genomics Research Institute (TGen), where this program was 
+  developed.
 
 ## Biological Theory Behind Design
 

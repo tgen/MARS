@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+# Primary Developer: Bertrand Odinet
+
+# Additional Developers: Dr. Jonathan J. Keats, Christophe Legendre, Bryce Turner
+
 import argparse
 import pandas as pd
 import os
@@ -82,8 +87,8 @@ if samplename is None:
 #  DEFAULTS
 # ----------------------------------------- #
 # This section reads in several user-definable defaults for the program. They are the name of the default GTF,
-# chromosomes to search, and IG components to consider, respectively. They can be changed by editing the
-# DEFAULT_FILE.txt file in the resource directory.
+# chromosomes to search, IG components to consider, and path to featureCounts respectively. They can be changed by
+# editing the USER_DEFAULTS.txt file in the resource directory.
 DEFAULT_FILE = open(r'%s/USER_DEFAULTS.txt' % resource_directory, 'r')
 default_parameters = DEFAULT_FILE.read().splitlines()
 default_gtf = default_parameters[2]
@@ -374,7 +379,7 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
                      index=False)
 
     # This function returns a list of primary information from the input dataframe, e.g. when given IGHC_Calc, etc.
-    # it will extract the two most-read genes, their frequencies, and the difference in their frequencies.
+    # it will extract the two most-read genes, their frequencies, and the difference between their frequencies.
     def get_Primary(dataframe):
         Primary = dataframe.sort_values(by='Count', ascending=False).reset_index().at[0, 'Geneid']
         PrimaryFreq = dataframe.sort_values(by='Count', ascending=False).reset_index().at[0, 'List_Percent']
@@ -573,6 +578,7 @@ interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % sampl
 call('R <%s/igh_graph.R --no-save %s %s %s' % (resource_directory, resource_directory, out_path, samplename),
      shell=True)
 
+# Remove temporary files if desired
 if keep_temp is True:
     pass
 elif keep_temp is False and build is True:
