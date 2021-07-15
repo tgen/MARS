@@ -52,7 +52,7 @@ tumor samples to assess their purity. It is designed for use as a command line t
 - Pandas 1.2.5 or later
 - Subreads 2.0.2 or later
 - R 3.6.1 or later
-- Samtools 1.9 or later (tested on 1.10)
+- Samtools 1.9 or later (tested with 1.10)
 
 ## Required Files
 Downloading the "RESOURCE_FILES" folder from this repository should ensure the user has all 
