@@ -583,7 +583,7 @@ else:
 interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % samplename)
 
 # Call the R script to produce the visual outputs
-call('R <%s/igh_graph2.R --no-save %s %s %s' % (resource_directory, resource_directory, out_path, samplename),
+call('R <%s/igh_graph.R --no-save %s %s %s' % (resource_directory, resource_directory, out_path, samplename),
      shell=True)
 
 if keep_temp is True:
