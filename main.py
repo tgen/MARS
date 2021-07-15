@@ -603,7 +603,7 @@ else:
     os.remove(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename))
     os.remove(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename))
     os.remove(r'%s/%stitle.txt' % (resource_directory, samplename))
-
+#
 sys.exit(0)
 
 ##############################################################
