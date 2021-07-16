@@ -597,6 +597,10 @@ else:
     os.remove(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename))
     os.remove(r'%s/%stitle.txt' % (resource_directory, samplename))
 
+#Remove these lines later
+os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
+os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
+
 sys.exit(0)
 
 ##############################################################
