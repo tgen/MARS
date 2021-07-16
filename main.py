@@ -33,6 +33,7 @@ parser.add_argument('-t', '--threads',
                     help='Number of threads to use. User must make threads available')
 # Add input argument for GTF file containing regions to isolate.
 parser.add_argument('-f', '--reference_fasta',
+                    default=None,
                     help='Reference genome fasta to be used in processing')
 # Add input argument for output path. If no argument or only a -o is provided, program defaults
 # to current working directory.
@@ -517,7 +518,8 @@ def writeGTF(inGTF, file_path):
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
 
-in_bam = read_aln_file(input_aln, threads, ref_fasta)
+print("ALN FILE: " + input_aln )
+in_bam = read_aln_file(input_aln, threads, reference_genome_fasta=ref_fasta )
 
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
 # the GTF and then processes the input BAM using the new GTF
