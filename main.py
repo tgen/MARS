@@ -608,6 +608,9 @@ else:
     os.remove(r'%s/%sGraph_IgL.txt' % (out_path, samplename))
     os.remove(r'%s/%stitle.txt' % (out_path, samplename))
 
+os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
+os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
+
 sys.exit(0)
 
 ##############################################################
