@@ -1,7 +1,7 @@
 # MARS
 **Primary Developer:** Bertrand Odinet
 
-**Additional Developers:** Dr. Jonathan J. Keats, Christophe Legendre, Bryce Turner, Daniel Enriquez
+**Additional Developers:** Dr. Jonathan J. Keats, Dr. Christophe Legendre, Bryce Turner, Daniel Enriquez
 
 ## Introduction
 
