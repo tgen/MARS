@@ -126,6 +126,12 @@ def read_aln_file(filename, threads, reference_genome_fasta=None):
         elif extension == ".sam":
             return filename
         else:
+            print(filename)
+            print(reference_genome_fasta)
+            print(threads)
+            print(extension)
+            print(basename)
+
             sys.exit("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
 
     except FileNotFoundError as fnf:
