@@ -102,36 +102,39 @@ featurecounts_path = default_parameters[8]
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
 # ------------------------------------------------------------------------------------------------------------------- #
 
-def read_aln_file(filename, threads, reference_genome_fasta=None):
+def read_aln_file(filename, threads, out_path, reference_genome_fasta=None):
     """
     read the alignment file whether it is a SAM, BAM or CRAM file and returns the bam file handle
     :return: aln read file handle (bamh or alnh)
     """
 
     extension = os.path.splitext(filename)[1]
-    basename = os.path.splitext(filename)[0]
+    basepath = os.path.splitext(filename)[0]
+    basename = os.path.splitext(os.path.basename(filename))[0]
     try:
         if extension == ".cram":
             if reference_genome_fasta is None:
                 raise FileNotFoundError(
                     "ERROR: reading CRAM file requires a Reference Genome Fasta File To be Provided with its FAI index.")
             print('Conversion to BAM required: running samtools')
-            call("samtools view --threads %s -bh %s -o %s.bam -T %s" % (threads, filename, basename,
+            call("samtools view --threads %s -bh %s -o %s/%s.bam -T %s" % (threads, filename, out_path, basename,
                                                                         reference_genome_fasta), shell=True)
             print('Indexing new BAM file')
-            call("samtools index -@ %s -b %s.bam" % (threads, basename), shell=True)
+            call("samtools index -@ %s -b %s/%s.bam" % (threads, out_path, basename), shell=True)
             print('Conversion successful')
-            return '%s.bam' % basename
+            return '%s/%s.bam' % (out_path, basename)
         elif extension == ".bam":
             return filename
         elif extension == ".sam":
             return filename
         else:
-            print(filename)
-            print(reference_genome_fasta)
-            print(threads)
-            print(extension)
-            print(basename)
+            print('ERROR: HALTING PROGRAM AND RETURNING VARIABLES FOR DEBUGGING')
+            print('FILENAME:' + filename)
+            print('REFERENCE FASTA:' + reference_genome_fasta)
+            print('THREADS:' + threads)
+            print('EXTENSION:' + extension)
+            print('BASE PATH:' + basepath)
+            print('BASE NAME:' + basename)
 
             sys.exit("EXPECTED EXTENSION for ALIGNMENT FILE NOT FOUND; must be either .cram, .bam or .sam")
 
@@ -518,8 +521,7 @@ def writeGTF(inGTF, file_path):
 # CODE THAT ACTUALLY RUNS THINGS
 # ------------------------------------------------------------------------------------------------------------------- #
 
-print("ALN FILE: " + input_aln )
-in_bam = read_aln_file(input_aln, threads, reference_genome_fasta=ref_fasta )
+in_bam = read_aln_file(input_aln, threads, out_path, reference_genome_fasta=ref_fasta)
 
 # Case where user wants to build an IG GTF from a different GTF than provided. In this case, the program builds
 # the GTF and then processes the input BAM using the new GTF
@@ -594,22 +596,19 @@ if keep_temp is True:
     pass
 elif keep_temp is False and build is True:
     if os.path.splitext(input_aln)[1] == ".cram":
-        os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
-        os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
+        os.remove(r'%s/%s.bam' % (out_path, samplename))
+        os.remove(r'%s/%s.bam.bai' % (out_path, samplename))
     os.remove(r'%s/%sGraph_IgH.txt' % (out_path, samplename))
     os.remove(r'%s/%sGraph_IgL.txt' % (out_path, samplename))
     os.remove(r'%s/%stitle.txt' % (out_path, samplename))
-    os.remove(r'%s.csv' % out_path)
+    os.remove(r'%s/%s.csv' % (out_path, samplename))
 else:
     if os.path.splitext(input_aln)[1] == ".cram":
-        os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
-        os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
+        os.remove(r'%s/%s.bam' % (out_path, samplename))
+        os.remove(r'%s/%s.bam.bai' % (out_path, samplename))
     os.remove(r'%s/%sGraph_IgH.txt' % (out_path, samplename))
     os.remove(r'%s/%sGraph_IgL.txt' % (out_path, samplename))
     os.remove(r'%s/%stitle.txt' % (out_path, samplename))
-
-os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
-os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
 
 sys.exit(0)
 
