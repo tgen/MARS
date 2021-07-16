@@ -25,9 +25,9 @@ path = run.arguments[3]
 output_path = run.arguments[4]
 samplename = run.arguments[5]
 
-IGHGraph = sprintf("%s/%sGraph_IgH.txt", path, samplename)
-IGLGraph = sprintf("%s/%sGraph_IgL.txt", path, samplename)
-title_var = sprintf("%s/%stitle.txt", path, samplename)
+IGHGraph = sprintf("%s/%sGraph_IgH.txt", output_path, samplename)
+IGLGraph = sprintf("%s/%sGraph_IgL.txt", output_path, samplename)
+title_var = sprintf("%s/%stitle.txt", output_path, samplename)
 saveIGL = sprintf("%s/%sIGL.png", output_path, samplename)
 saveIGH = sprintf("%s/%sIGH.png", output_path, samplename)
 pdfout = sprintf("%s/%sRplots.pdf",output_path, samplename)
