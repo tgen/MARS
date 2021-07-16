@@ -95,6 +95,8 @@ default_gtf = default_parameters[2]
 default_chromosome_list = default_parameters[4].split()
 default_component_list = default_parameters[6].split()
 featurecounts_path = default_parameters[8]
+
+
 # ------------------------------------------------------------------------------------------------------------------- #
 # FUNCTIONS THAT SUPPORT CODE AT BOTTOM
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -373,9 +375,9 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
     Graph_IgH.columns = ['CommonName', 'Count', 'Percentage', 'TotalFrequency', 'Locus', 'ElementSize']
 
     # Write these tables to a tab-delimited text file. R will use these files to plot
-    Graph_IgH.to_csv(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename), sep='\t', float_format='%.12f',
+    Graph_IgH.to_csv(r'%s/%sGraph_IgH.txt' % (filepath, samplename), sep='\t', float_format='%.12f',
                      index=False)
-    Graph_IgL.to_csv(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename), sep='\t', float_format='%.12f',
+    Graph_IgL.to_csv(r'%s/%sGraph_IgL.txt' % (filepath, samplename), sep='\t', float_format='%.12f',
                      index=False)
 
     # This function returns a list of primary information from the input dataframe, e.g. when given IGHC_Calc, etc.
@@ -450,7 +452,7 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
         resultstextfile.write(element + "\t")
     resultstextfile.close()
 
-    titletextfile = open(r"%s/%stitle.txt" % (resource_directory, samplename), "w")
+    titletextfile = open(r"%s/%stitle.txt" % (filepath, samplename), "w")
     titletextfile.write("Percent Ig = %s ; Kappa/(K+L) = %s ; Lambda/(K+L) = %s ; Non B Contamination = %s"
                         % (str(round(Percent_IG, 4)), str(round(Percent_Kappa, 4)), str(round(Percent_Lambda, 4)),
                            str(geomean)))
@@ -569,7 +571,8 @@ else:
 
     # Run featurecounts from the shell
     call("%s -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
-         "%s.txt %s" % (featurecounts_path, threads, resource_directory, default_gtf, out_path, samplename, in_bam), shell=True)
+         "%s.txt %s" % (featurecounts_path, threads, resource_directory, default_gtf, out_path, samplename, in_bam),
+         shell=True)
 
 # Run the interpret_featurecounts function on featureCounts's output
 interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % samplename)
@@ -585,21 +588,17 @@ elif keep_temp is False and build is True:
     if os.path.splitext(input_aln)[1] == ".cram":
         os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
         os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
-    os.remove(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename))
-    os.remove(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename))
-    os.remove(r'%s/%stitle.txt' % (resource_directory, samplename))
+    os.remove(r'%s/%sGraph_IgH.txt' % (out_path, samplename))
+    os.remove(r'%s/%sGraph_IgL.txt' % (out_path, samplename))
+    os.remove(r'%s/%stitle.txt' % (out_path, samplename))
     os.remove(r'%s.csv' % out_path)
 else:
     if os.path.splitext(input_aln)[1] == ".cram":
         os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
         os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
-    os.remove(r'%s/%sGraph_IgH.txt' % (resource_directory, samplename))
-    os.remove(r'%s/%sGraph_IgL.txt' % (resource_directory, samplename))
-    os.remove(r'%s/%stitle.txt' % (resource_directory, samplename))
-
-#Remove these lines later
-os.remove(r'%s.bam' % (os.path.splitext(input_aln)[0]))
-os.remove(r'%s.bam.bai' % (os.path.splitext(input_aln)[0]))
+    os.remove(r'%s/%sGraph_IgH.txt' % (out_path, samplename))
+    os.remove(r'%s/%sGraph_IgL.txt' % (out_path, samplename))
+    os.remove(r'%s/%stitle.txt' % (out_path, samplename))
 
 sys.exit(0)
 
