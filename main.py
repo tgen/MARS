@@ -332,19 +332,19 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
     Total_IGL = reads[reads['Geneid'].str.contains('LAMBDA_Locus')].reset_index().at[0, 'Count']
     # TODO: Unsure if these variables being global is even necessary after recent changes
     # Generate several metrics used in later calculations using simple arithmetic on variables already produced.
-    global Total_IG
+    # global Total_IG
     Total_IG = Total_IGH + Total_IGK + Total_IGL
-    global Percent_IG
+   #  global Percent_IG
     Percent_IG = Total_IG / Featurecount_Total
-    global Total_Light_Chain
+    # global Total_Light_Chain
     Total_Light_Chain = Total_IGK + Total_IGL
-    global Total_Light_Variable
+    # global Total_Light_Variable
     Total_Light_Variable = Total_IGKV_Reads + Total_IGLV_Reads
-    global Total_Light_Constant
+    # global Total_Light_Constant
     Total_Light_Constant = Total_IGKC_Reads + Total_IGLC_Reads
-    global Percent_Kappa
+    # global Percent_Kappa
     Percent_Kappa = Total_IGK / Total_Light_Chain
-    global Percent_Lambda
+    # global Percent_Lambda
     Percent_Lambda = Total_IGL / Total_Light_Chain
 
     # About here, we officially transition to building the files that the R script wants
