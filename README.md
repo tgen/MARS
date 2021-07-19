@@ -23,7 +23,7 @@ tumor samples to assess their purity. It is designed for use as a command line t
      `-i /path/to/input/BAMfile.bam` or `-i /path/to/input/SAMfile.sam` or `-i /path/to/input/CRAMfile.cram`
 
   **Optional:**
-   - `-b` The `-b` flag. Invoke to build the reference GTF from an input GTF. The `-b` flag requires no accompanying
+   - `-b` Invoke the `-b` flag to build the reference GTF from an input GTF. The `-b` flag requires no accompanying
      directory or file and can be typed alone, but if invoked, it must be used in tandem with the `-g` flag and an input GTF.
      
 
@@ -36,7 +36,7 @@ tumor samples to assess their purity. It is designed for use as a command line t
      Corresponds to the `-o` flag as follows: `-o /my/output/path`
      
 
-   - `-k` The `-k` flag. Invoke to keep temporary files used in the script. The `-k` flag requires no accompanying
+   - `-k` Invoke the `-k` flag to keep temporary files used in the script. The `-k` flag requires no accompanying
      directory or file and can be typed alone. Users should be understand that invoking the  `-k` flag will leave temporary
      files in the output directory.
      
@@ -101,7 +101,7 @@ a specific reason to contradict the recommendations below.
   
 
 - **The default chromosomes:** If building a new GTF, these are the chromosomes that will be searched in the new GTF
-  for Immunoglobulin genes. To edit, simply add, subtract or replace the numbers in line 5 of the 
+  for immunoglobulin genes. To edit, simply add, subtract or replace the numbers in line 5 of the 
   USER_DEFAULTS file with the number of the chromosome(s) you want to include. Chromosome numbers should be 
   space-separated integers only, with no additional characters.
   
