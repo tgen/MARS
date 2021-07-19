@@ -421,23 +421,23 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
     Top2_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False).reset_index().drop(columns='index').at[
         1, 'Delta']
 
-    IgHResults = pd.read_csv(r'%s/Graph_IgH.txt' % resource_directory, sep='\t', lineterminator='\n')
-    IgLResults = pd.read_csv(r'%s/Graph_IgL.txt' % resource_directory, sep='\t', lineterminator='\n')
-
-    if len(IgLResults[(IgLResults['Percentage'] > 0.9)].index) == 2 \
-            and len(IgHResults[(IgHResults['Percentage'] > 0.9)].index) == 2:
-        clonality = 'Likely monoclonal'
-
-    elif len(IgLResults[(IgLResults['Percentage'] > 0.9)].index) == 2 \
-            and len(IgHResults[(IgHResults['TotalFrequency'] > 0.1)].index) == 0:
-        clonality = 'Likely Light-Chain Only'
-
-    elif len(IgLResults[(IgLResults['Percentage'] > 0.4) & (IgLResults['Percentage'] < 0.6)].index) == 2 \
-            and len(IgHResults[(IgHResults['Percentage'] > 0.4) & (IgHResults['Percentage'] < 0.6)].index) == 2:
-        clonality = 'Likely Biclonal'
-
-    else:
-        clonality = 'Manual Review Necessary'
+    # IgHResults = pd.read_csv(r'%s/Graph_IgH.txt' % resource_directory, sep='\t', lineterminator='\n')
+    # IgLResults = pd.read_csv(r'%s/Graph_IgL.txt' % resource_directory, sep='\t', lineterminator='\n')
+    #
+    # if len(IgLResults[(IgLResults['Percentage'] > 0.9)].index) == 2 \
+    #         and len(IgHResults[(IgHResults['Percentage'] > 0.9)].index) == 2:
+    #     clonality = 'Likely monoclonal'
+    #
+    # elif len(IgLResults[(IgLResults['Percentage'] > 0.9)].index) == 2 \
+    #         and len(IgHResults[(IgHResults['TotalFrequency'] > 0.1)].index) == 0:
+    #     clonality = 'Likely Light-Chain Only'
+    #
+    # elif len(IgLResults[(IgLResults['Percentage'] > 0.4) & (IgLResults['Percentage'] < 0.6)].index) == 2 \
+    #         and len(IgHResults[(IgHResults['Percentage'] > 0.4) & (IgHResults['Percentage'] < 0.6)].index) == 2:
+    #     clonality = 'Likely Biclonal'
+    #
+    # else:
+    clonality = 'Manual Review Necessary'
 
     # This code generates a tab-separated text file containing the important results from the data in one row and
     # labels for each piece of data in a row above.
