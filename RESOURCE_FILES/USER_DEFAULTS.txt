@@ -6,4 +6,4 @@ HUMAN_IG_DEFAULT
 # The default IG components included in the GTF. IG_J is excluded by default due to its minor importance in the context of the purity checker, but can be added if necessary.
 IG_V IG_C
 # Path to featureCounts
-/scratch/bodinet/subreads_folder/subread-2.0.2-Linux-x86_64/bin/featureCounts
+/home/bodinet/Downloads/subread-2.0.2-Linux-x86_64/bin/featureCounts
