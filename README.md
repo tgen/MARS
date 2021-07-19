@@ -37,8 +37,8 @@ tumor samples to assess their purity. It is designed for use as a command line t
      
 
    - `-k` The `-k` flag. Invoke to keep temporary files used in the script. The `-k` flag requires no accompanying
-     directory or file and can be typed alone. Users should be warned that invoking the  `-k` flag will leave temporary
-     files in both the output and resource directories.
+     directory or file and can be typed alone. Users should be understand that invoking the  `-k` flag will leave temporary
+     files in the output directory.
      
 
    - `-f` An input FASTA file. If the input file is in CRAM format, an input FASTA must also be provided. Corresponds 
