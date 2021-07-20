@@ -436,9 +436,10 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
 
     # This block decides which "bucket" the sample falls into
 
-    # Case where exactly four lines are above 85% of their respective groups (highly monoclonal)
-    if len(IgLResults[(IgLResults['Percentage'] > 0.85)].index) == 2 \
-            and len(IgHResults[(IgHResults['Percentage'] > 0.85)].index) == 2:
+    # Case where exactly at least 3 lines are above 85% of their respective groups and if three,
+    # the smallest one is at least 75% (highly monoclonal)
+    if len(CompleteIgResults[(CompleteIgResults['Percentage'] > 0.85)].index) >= 3 and \
+            len(CompleteIgResults[(CompleteIgResults['Percentage'] > 0.75)].index) == 4:
 
         Monoclonal = True
         ManualReview = not ManualReview
