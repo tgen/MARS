@@ -63,9 +63,21 @@ tumor samples to assess their purity. It is designed for use as a command line t
 - One text file containing numerical results.
 - One reference GTF (if `-b` is invoked).
 
-**Example of Outputs for Monoclonal Sample**
 
-**Example of Outputs for Monoclonal Sample**
+
+### Example of Outputs for Monoclonal Sample
+
+
+![MMRF_1086_1_BM_CD138pos_T2_TSMRU starIGH](https://user-images.githubusercontent.com/57779509/126364043-a87b9692-55ca-410a-b026-197556d8cf3b.png)
+![MMRF_1086_1_BM_CD138pos_T2_TSMRU starIGL](https://user-images.githubusercontent.com/57779509/126364073-b3f3b6cb-70b3-4bc6-9942-7932a801a5b0.png)
+
+
+
+### Example of Outputs for Polyclonal Sample
+
+
+![MMRF_1101_2_BM_CD138pos_T2_TSMRU starIGH](https://user-images.githubusercontent.com/57779509/126364227-bc021384-8b77-4721-8fd6-628bd520cc33.png)
+![MMRF_1101_2_BM_CD138pos_T2_TSMRU starIGL](https://user-images.githubusercontent.com/57779509/126364243-efb55d58-7c17-41d5-ba10-06496bf3e9ee.png)
 
 ## Required Software
 
