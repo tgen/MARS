@@ -421,23 +421,94 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
     Top2_Delta = Topframe.sort_values(by='PrimaryFreq', ascending=False).reset_index().drop(columns='index').at[
         1, 'Delta']
 
-    # IgHResults = pd.read_csv(r'%s/Graph_IgH.txt' % resource_directory, sep='\t', lineterminator='\n')
-    # IgLResults = pd.read_csv(r'%s/Graph_IgL.txt' % resource_directory, sep='\t', lineterminator='\n')
-    #
-    # if len(IgLResults[(IgLResults['Percentage'] > 0.9)].index) == 2 \
-    #         and len(IgHResults[(IgHResults['Percentage'] > 0.9)].index) == 2:
-    #     clonality = 'Likely monoclonal'
-    #
-    # elif len(IgLResults[(IgLResults['Percentage'] > 0.9)].index) == 2 \
-    #         and len(IgHResults[(IgHResults['TotalFrequency'] > 0.1)].index) == 0:
-    #     clonality = 'Likely Light-Chain Only'
-    #
-    # elif len(IgLResults[(IgLResults['Percentage'] > 0.4) & (IgLResults['Percentage'] < 0.6)].index) == 2 \
-    #         and len(IgHResults[(IgHResults['Percentage'] > 0.4) & (IgHResults['Percentage'] < 0.6)].index) == 2:
-    #     clonality = 'Likely Biclonal'
-    #
-    # else:
-    clonality = 'Manual Review Necessary'
+    IgHResults = Graph_IgH
+    IgLResults = Graph_IgL
+
+    CompleteIgResults = IgHResults.append(IgLResults)
+    VariableIgResults = CompleteIgResults[CompleteIgResults['Locus'].str.contains('V')]
+
+    # Introduce initial condition for the clonality of the sample
+    Monoclonal = False
+    Polyclonal = False
+    Biclonal = False
+    LightChainOnly = False
+    ManualReview = True
+
+    # This block decides which "bucket" the sample falls into
+
+    # Case where exactly four lines are above 85% of their respective groups (highly monoclonal)
+    if len(IgLResults[(IgLResults['Percentage'] > 0.85)].index) == 2 \
+            and len(IgHResults[(IgHResults['Percentage'] > 0.85)].index) == 2:
+
+        Monoclonal = True
+        ManualReview = not ManualReview
+
+    # All non-monoclonal cases
+    else:
+        # Case where exactly two light chains are above 75% (hallmark of light chain only)
+        if len(IgLResults[(IgLResults['Percentage'] > 0.75)].index) == 2:
+            # Case where, in addition to above, no heavy chains contribute > 0.001 total frequency (another hallmark of LCO)
+            if len(IgHResults[(IgHResults['TotalFrequency'] > 0.001)].index) == 0:
+
+                LightChainOnly = True
+                ManualReview = not ManualReview
+
+            # Case where there are exactly two prominent light chains but moderate heavy chain presence. If this stage
+            # is reached, either something has gone wrong, or the heavy chain data is poor/corrupted. In either case,
+            # manual review is necessary.
+            else:
+
+                ManualReview = True
+
+        # Case where there are neither 4 chains above 85% nor exactly two light chains above 75%
+        # (biclonal or polyclonal cases)
+        else:
+            # Case where, across the whole data set, between 6-8 bars are between 35% - 65% of their groups.
+            # This is a hallmark of biclonality and is rare, but does sometimes occur.
+            if len(CompleteIgResults[(CompleteIgResults['Percentage'] >= 0.35) & (
+                    CompleteIgResults['Percentage'] <= 0.65)].index) >= 6 \
+                    and len(CompleteIgResults[(CompleteIgResults['Percentage'] >= 0.35) & (
+                    CompleteIgResults['Percentage'] <= 0.65)].index) <= 8:
+
+                Biclonal = True
+                ManualReview = not ManualReview
+
+            # Cases where none of the conditions above are met, which leaves polyclonality or manual review required
+            else:
+
+                # Case where No variable genes make up more than 20% of the sample (a hallmark of polyclonality)
+                if len(VariableIgResults[(VariableIgResults['Percentage'] > 0.20)].index) == 0:
+                    Polyclonal = True
+                    ManualReview = not ManualReview
+
+                # If the above is not true, manual review is required
+                else:
+
+                    ManualReview = True
+
+    # This block assigns clonality to the output, double checking that not more than one case is true. Such cases
+    # should not theoretically be possible given the above logic, but in the eventuality an extremely unusual data set exploited
+    # an unforseen edge case, manual review will automatically be invoked.
+
+    if Monoclonal is True and Polyclonal is False and Biclonal is False and LightChainOnly is False and ManualReview is False:
+
+        clonality = 'Likely Monoclonal'
+
+    elif Polyclonal is True and Monoclonal is False and Biclonal is False and LightChainOnly is False and ManualReview is False:
+
+        clonality = 'Likely Polyclonal'
+
+    elif Biclonal is True and Monoclonal is False and Polyclonal is False and LightChainOnly is False and ManualReview is False:
+
+        clonality = 'Likely Biclonal'
+
+    elif LightChainOnly is True and Monoclonal is False and Polyclonal is False and Biclonal is False and ManualReview is False:
+
+        clonality = 'Likely Light Chain Only'
+
+    else:
+
+        clonality = 'Manual Review Required'
 
     # This code generates a tab-separated text file containing the important results from the data in one row and
     # labels for each piece of data in a row above.
