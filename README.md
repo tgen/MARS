@@ -63,6 +63,10 @@ tumor samples to assess their purity. It is designed for use as a command line t
 - One text file containing numerical results.
 - One reference GTF (if `-b` is invoked).
 
+**Example of Outputs for Monoclonal Sample**
+
+**Example of Outputs for Monoclonal Sample**
+
 ## Required Software
 
 - Python 3.7.2 or later
