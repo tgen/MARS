@@ -227,4 +227,4 @@ an input BAM using the `-i` flag will fix the error.
 The example above will result in an error because the user has not provided a FASTA file for the program to convert
 the CRAM into a BAM for analysis.
 Not providing a FASTA will likely cause an error such as: `ERROR: reading CRAM file requires a Reference Genome Fasta 
-File To be Provided with its FAI index.`. Including an input FASTA using the `-f` flag will fix the error.
+File To be Provided with its FAI index.` Including an input FASTA using the `-f` flag will fix the error.
