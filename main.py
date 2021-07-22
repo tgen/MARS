@@ -556,11 +556,12 @@ def interpret_featurecounts(filepath, resource_directory, samplename):
 
 def writeGTF(inGTF, file_path):
     """
-	Write a GTF dataframe into a file
-	:param inGTF: GTF dataframe to be written. It should either have 9 columns with the last one being the "attributes" section or more than 9 columns where all columns after the 8th will be colapsed into one.
-	:param file_path: path/to/the/file.gtf
-	:returns: nothing
-	"""
+    Write a GTF dataframe into a file
+    :param inGTF: GTF dataframe to be written. It should either have 9 columns with the last one being the "attributes"
+    section or more than 9 columns where all columns after the 8th will be colapsed into one.
+    :param file_path: path/to/the/file.gtf
+    :returns: nothing
+    """
     # This block collapses all columns after 8 into the GTF's signature semicolon-separated ninth column. Additional
     # code was provided by me to handle the edge case where the score column's '.' are imported as nan, and to
     # write the GTF without use of Python's csv library. Code not otherwise specified was copied from AGEPy's GitHub
