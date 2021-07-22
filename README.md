@@ -8,7 +8,7 @@
 The MARS program (Myeloma Analysis for RNASeq) is a tool designed to analyze RNAseq data from Multiple Myeloma 
 tumor samples to assess their purity. It is designed for use as a command line tool.
 
-## Inputs, Outputs, and Corresponding Flags
+## Inputs, Outputs, and Flags
 
  ### Inputs
   
