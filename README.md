@@ -90,11 +90,11 @@ tumor samples to assess their purity. It is designed for use as a command line t
 ## Required Files
 Downloading the "RESOURCE_FILES" folder from this repository should ensure the user has all 
 necessary files. Once RESOURCE_FILES is placed in a convenient directory, invoking the `-d` 
-flag to the directory as follows should allow the user to run the purity checker as intended:
+flag to the directory as follows should allow the user to run the MARS program as intended:
 `-d my/resource/path/RESOURCE_FILES`
 
 ## Managing Program Defaults
-The purity checker uses a file called USER_DEFAULTS.txt to manage default preferences that are unlikely to change
+MARS uses a file called USER_DEFAULTS.txt to manage default preferences that are unlikely to change
 frequently enough to warrant a command line argument, but should still be editable without rewriting actual lines 
 of code.
 
