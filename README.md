@@ -8,6 +8,35 @@
 The MARS program (Myeloma Analysis for RNASeq) is a tool designed to analyze RNAseq data from Multiple Myeloma 
 tumor samples to assess their purity. It is designed for use as a command line tool.
 
+## Biological Theory Behind Design
+
+Multiple Myeloma (MM) is a cancer of plasma cells, a type of white blood
+cell responsible for producing a single unique immunoglobulin (IG). 
+Experimental data show that it is extremely rare for mutations in oncogenes 
+causing uncontrolled cell growth and mutations in genes responsible for IG 
+production to overlap. Consequently, a 100% pure myeloma sample should 
+theoretically exhibit production of only one IG RNA sequence, with additional 
+IG RNA serving as an indicator of decreased purity. Furthermore, production 
+of RNA associated with genes *downregulated* in plasma cells should serve as 
+an additional indicator of contamination. This software uses the Subreads 
+tool featureCounts to obtain RNA counts corresponding to IG genes and known 
+contaminants, and graphs the output to provide an indication of sample purity.
+
+### Example of Outputs for Monoclonal Sample
+
+
+![MMRF_1086_1_BM_CD138pos_T2_TSMRU starIGH](https://user-images.githubusercontent.com/57779509/126364043-a87b9692-55ca-410a-b026-197556d8cf3b.png)
+![MMRF_1086_1_BM_CD138pos_T2_TSMRU starIGL](https://user-images.githubusercontent.com/57779509/126364073-b3f3b6cb-70b3-4bc6-9942-7932a801a5b0.png)
+
+
+
+### Example of Outputs for Polyclonal Sample
+
+
+![MMRF_1101_2_BM_CD138pos_T2_TSMRU starIGH](https://user-images.githubusercontent.com/57779509/126364227-bc021384-8b77-4721-8fd6-628bd520cc33.png)
+![MMRF_1101_2_BM_CD138pos_T2_TSMRU starIGL](https://user-images.githubusercontent.com/57779509/126364243-efb55d58-7c17-41d5-ba10-06496bf3e9ee.png)
+
+
 ## Inputs, Outputs, and Flags
 
  ### Inputs
@@ -62,22 +91,6 @@ tumor samples to assess their purity. It is designed for use as a command line t
 - Two R plots showing clonality of sample.
 - One text file containing numerical results.
 - One reference GTF (if `-b` is invoked).
-
-
-
-### Example of Outputs for Monoclonal Sample
-
-
-![MMRF_1086_1_BM_CD138pos_T2_TSMRU starIGH](https://user-images.githubusercontent.com/57779509/126364043-a87b9692-55ca-410a-b026-197556d8cf3b.png)
-![MMRF_1086_1_BM_CD138pos_T2_TSMRU starIGL](https://user-images.githubusercontent.com/57779509/126364073-b3f3b6cb-70b3-4bc6-9942-7932a801a5b0.png)
-
-
-
-### Example of Outputs for Polyclonal Sample
-
-
-![MMRF_1101_2_BM_CD138pos_T2_TSMRU starIGH](https://user-images.githubusercontent.com/57779509/126364227-bc021384-8b77-4721-8fd6-628bd520cc33.png)
-![MMRF_1101_2_BM_CD138pos_T2_TSMRU starIGL](https://user-images.githubusercontent.com/57779509/126364243-efb55d58-7c17-41d5-ba10-06496bf3e9ee.png)
 
 ## Required Software
 
@@ -144,19 +157,6 @@ a specific reason to contradict the recommendations below.
   that is functional within the Phoenix Translational Genomics Research Institute (TGen), where this program was 
   developed.
 
-## Biological Theory Behind Design
-
-Multiple Myeloma (MM) is a cancer of plasma cells, a type of white blood
-cell responsible for producing a single unique immunoglobulin (IG). 
-Experimental data show that it is extremely rare for mutations in oncogenes 
-causing uncontrolled cell growth and mutations in genes responsible for IG 
-production to overlap. Consequently, a 100% pure myeloma sample should 
-theoretically exhibit production of only one IG RNA sequence, with additional 
-IG RNA serving as an indicator of decreased purity. Furthermore, production 
-of RNA associated with genes *downregulated* in plasma cells should serve as 
-an additional indicator of contamination. This software uses the Subreads 
-tool featureCounts to obtain RNA counts corresponding to IG genes and known 
-contaminants, and graphs the output to provide an indication of sample purity.
 
 ## Usage Examples
 
