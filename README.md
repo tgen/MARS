@@ -18,7 +18,7 @@ production to overlap. Consequently, a 100% pure myeloma sample should
 theoretically exhibit production of only one IG RNA sequence, with additional 
 IG RNA serving as an indicator of decreased purity. Furthermore, production 
 of RNA associated with genes *downregulated* in plasma cells should serve as 
-an additional indicator of contamination. This software uses the Subreads 
+an additional indicator of contamination. This software uses the Subread 
 tool featureCounts to obtain RNA counts corresponding to IG genes and known 
 contaminants, and graphs the output to provide an indication of sample purity.
 
@@ -96,7 +96,7 @@ contaminants, and graphs the output to provide an indication of sample purity.
 
 - Python 3.7.2 or later
 - Pandas 1.2.5 or later
-- Subreads 2.0.2 or later
+- Subread 2.0.2 or later
 - R 3.6.1 or later
 - Samtools 1.9 or later (tested with 1.10)
 
@@ -150,7 +150,7 @@ a specific reason to contradict the recommendations below.
   should check the gene biotype tag to ensure the naming convention has not changed.
   
   
-- **The path to featureCounts:** The program will search in this path to launch Subreads's featureCounts tool. To 
+- **The path to featureCounts:** The program will search in this path to launch Subread's featureCounts tool. To 
   change, replace the path in line 9 of the USER_DEFAULTS file with an alternate path. 
   
   The file comes with a path
