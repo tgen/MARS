@@ -62,6 +62,10 @@ parser.add_argument('-d', '--resource_directory',
                     default=str(os.getcwd()),
                     help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
                          'Defaults to current directory.')
+parser.add_argument('-build_only', '--build_only',
+                    default=False,
+                    type=bool,
+                    help='Invoke -build_only to stop the program after the new GTF is built.')
 
 # Generate accessible arguments by calling parse_args
 args = parser.parse_args()
@@ -76,6 +80,7 @@ keep_temp = args.keep_temp
 samplename = args.sample_name
 resource_directory = args.resource_directory
 ref_fasta = args.reference_fasta
+build_only = args.build_only
 
 # This statement sets the sample name to the name of the BAM if no name is provided, using os.basename to extract the
 # file name from the input path and os.splitext to split the name into ('filename', 'extension'),
@@ -639,6 +644,9 @@ if in_gtf is not None and build is True:
     writeGTF(ig_dataframe, r'%s/%s' % (out_path, samplename))
 
     call("echo 'Conversion successful'", shell=True)
+
+    if build_only == True:
+        sys.exit(0)
 
     # Direct shell to scratch for universal usage capabilities
     call("%s -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
