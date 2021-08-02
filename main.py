@@ -673,15 +673,15 @@ elif in_gtf is not None and build is False:
 else:
 
     # Run featurecounts from the shell
-    try:
-        call("featureCounts -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
-             "%s.txt %s" % (threads, resource_directory, default_gtf, out_path, samplename, in_bam),
-             shell=True)
-    except:
-        print('EXCEPT STATEMENT EXECUTED')
-        call("%s -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
-            "%s.txt %s" % (featurecounts_path, threads, resource_directory, default_gtf, out_path, samplename, in_bam),
-            shell=True)
+    #try:
+        #call("featureCounts -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
+             #"%s.txt %s" % (threads, resource_directory, default_gtf, out_path, samplename, in_bam),
+             #shell=True)
+    #except:
+        #print('EXCEPT STATEMENT EXECUTED')
+    call("%s -g gene_name -O -s 0 -Q 10 -T %s -C -p -a %s/%s.gtf -o %s/"
+        "%s.txt %s" % (featurecounts_path, threads, resource_directory, default_gtf, out_path, samplename, in_bam),
+        shell=True)
 
 # Run the interpret_featurecounts function on featureCounts's output
 interpret_featurecounts('%s' % out_path, '%s' % resource_directory, '%s' % samplename)
@@ -708,9 +708,6 @@ else:
     os.remove(r'%s/%sGraph_IgH.txt' % (out_path, samplename))
     os.remove(r'%s/%sGraph_IgL.txt' % (out_path, samplename))
     os.remove(r'%s/%stitle.txt' % (out_path, samplename))
-
-# os.remove(r'%s/%s.bam' % (out_path, samplename))
-# os.remove(r'%s/%s.bam.bai' % (out_path, samplename))
 
 sys.exit(0)
 
