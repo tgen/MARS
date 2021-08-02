@@ -63,8 +63,7 @@ parser.add_argument('-d', '--resource_directory',
                     help='Include -d /path/to/resource/files to specify a directory to pull resource files from.'
                          'Defaults to current directory.')
 parser.add_argument('-build_only', '--build_only',
-                    default=False,
-                    type=bool,
+                    action='store_true',
                     help='Invoke -build_only to stop the program after the new GTF is built.')
 
 # Generate accessible arguments by calling parse_args
@@ -646,6 +645,8 @@ if in_gtf is not None and build is True:
     call("echo 'Conversion successful'", shell=True)
 
     if build_only == True:
+        if keep_temp is False:
+            os.remove(r'%s/%s.csv' % (out_path, samplename))
         sys.exit(0)
 
     # Direct shell to scratch for universal usage capabilities
