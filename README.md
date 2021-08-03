@@ -94,9 +94,38 @@ contaminants, and graphs the output to provide an indication of sample purity.
 
 ### Outputs
 
-- Two R plots showing clonality of sample.
-- One text file containing numerical results.
-- One reference GTF (if `-b` is invoked).
+- Two R plots showing clonality of sample, in the form `sample_nameIGL.png` and `sample_nameIGH.png`.
+- One text file containing numerical results, in the form `sample_namepurityCheckerResults.txt`.
+- One reference GTF (if `-b` is invoked), in the form `sample_name.gtf`.
+
+**Definitions of Results**
+- Sample: The sample name
+- PrimaryIgHC: The most-expressed IG heavy constant region (in terms of total reads among all IgHC regions)
+- PrimaryIgHCFreq: The fraction of PrimaryIgHC reads with respect to all IgHC reads. That is, if 90% of reads for all
+  IgHC regions map to IGHA1, PrimaryIgHCFreq = 0.9.
+- SecondaryIgHC: The second-most-expressed IG heavy constant region
+- DeltaIgHC: The difference in expression between PrimaryIgHC and SecondaryIgHC, calculated by
+  taking the difference between the PrimaryIgHCFreq and what would be SecondaryIgHCFreq (SecondaryIgHCFreq is not included for brevity)
+- For [Primary/Secondary/Freq/Delta] [IgHV/IgLC/IgLV], the explanations are essentially identical to above
+- TOTAL_IGHC_READS: The total number of Ig Heavy Constant reads
+- TOTAL_IGHV_READS: The total number of Ig Heavy Variable reads
+- TOTAL_IGKC/V_READS: The total number of Ig Kappa Light Chain Constant/Variable reads
+- TOTAL_IGLC/V_READS: The total number of Ig Lambda Light Chain Constant/Variable reads
+- TOTAL_IGH: Total IG Heavy reads, regardless of constant or variable
+- TOTAL_IGK: Total IG Light Kappa reads, regardless of constant or variable
+- TOTAL_IGL: Total IG Light Lambda reads, regardless of constant or variable
+- TOTAL_IG: Total IG reads, without exception
+- PERCENT_IG: TOTAL_IG divided by all reads in the sample
+- TOTAL_LIGHT_CHAIN: Reads for all light chain segments
+- TOTAL_LIGHT_VARIABLE: Reads for all light variable, whether kappa or lambda
+- TOTAL_LIGHT_CONSTANT: Reads for all light constant, whether kappa or lambda
+- PERCENT_KAPPA: Kappa reads divided by all light chain reads
+- PERCENT_LAMBDA: Lambda reads divided by all light chain reads
+- Top1: The most expressed gene overall, as a fraction of reads of all Ig genes
+- Top2: The second-most expressed gene overall, as a fraction of reads of all Ig genes
+- Mean_Top_Delta: The average of the Deltas of Top1 and Top2 with respect to their Ig families
+- NonB_Contamination: The geometric mean of the RPKM of the samples
+- Clonality: The likely clonality of the sample, as determined by the program
 
 ## Required Software
 
