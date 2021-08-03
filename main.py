@@ -224,7 +224,7 @@ def isolate_ig(dataframe, contaminant_list, loci, chromosome_list=default_chromo
     ig_dataframe = ig_dataframe.drop(
         ig_dataframe[(ig_dataframe.gene_name.str.contains('D')) & (ig_dataframe.gene_name.str.match('IGHV'))].index)
     ig_dataframe = ig_dataframe.append(ig_dataframe2).reset_index(drop=True)
-    # TODO: confirm that IGHV drop statement work properly, I added this on the plane because I realized I goofed
+
 
     return ig_dataframe
 

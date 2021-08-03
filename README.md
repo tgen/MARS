@@ -11,15 +11,14 @@ tumor samples to assess their purity. It is designed for use as a command line t
 ## Biological Theory Behind Design
 
 Multiple Myeloma (MM) is a cancer of plasma cells, a type of white blood
-cell responsible for producing a single unique immunoglobulin (IG). 
-Experimental data show that it is extremely rare for mutations in oncogenes 
-causing uncontrolled cell growth and mutations in genes responsible for IG 
-production to overlap. Consequently, a 100% pure myeloma sample should 
-theoretically exhibit production of only one IG RNA sequence, with additional 
+cell responsible for producing a single unique immunoglobulin (IG, synonym for antibody). 
+Experimental data show that MM tumors produce a single IG, where all cells share the same VDJ sequence, and the same 
+selection of heavy and light chains. Consequently, a 100% pure myeloma sample should 
+express only one IG RNA sequence, with additional 
 IG RNA serving as an indicator of decreased purity. Furthermore, production 
-of RNA associated with genes *downregulated* in plasma cells should serve as 
-an additional indicator of contamination. This software uses the Subread 
-tool featureCounts to obtain RNA counts corresponding to IG genes and known 
+of RNA associated with genes expressed in non-B lineage cells should serve as 
+an additional indicator of contamination. This software uses featureCounts, a module of the Subread tool,
+to quickly obtain RNA counts corresponding to IG genes and known 
 contaminants, and graphs the output to provide an indication of sample purity.
 
 ### Example of Outputs for Monoclonal Sample
@@ -70,7 +69,7 @@ contaminants, and graphs the output to provide an indication of sample purity.
      files in the output directory.
      
 
-   - `-f` An input FASTA file. If the input file is in CRAM format, an input FASTA must also be provided. Corresponds 
+   - `-f` An input FASTA file. If the input file is in CRAM format, an input FASTA must also be provided, along with the FAI index. Corresponds 
      to the `-f` flag as follows: `-f /path/to/FASTAfile.fa`  
      
 
@@ -94,15 +93,28 @@ contaminants, and graphs the output to provide an indication of sample purity.
 
 ## Required Software
 
-- Python 3.7.2 or later
-- Pandas 1.2.5 or later
-- Subread 2.0.2 or later
+- Python 3.7.2 or later 
+  - pandas 1.2.5 or later 
+  - argparse
+  - scipy
+  - os
+  - sys
+  - gtfparse
+  - subprocess
 - R 3.6.1 or later
+  - ggplot2
+  - stringr
+- Subread 2.0.2 or later
 - Samtools 1.9 or later (tested with 1.10)
 
+The build mode of the program has been tested with the Ensembl human GTF format.
+
+The input file (BAM, CRAM, SAM) should contain RNA data, where mapping adheres to the Tophat format (i.e. unique alignment = 255).
+The program as a whole has been tested with files aligned via STAR.
+
 ## Required Files
-Downloading the "RESOURCE_FILES" folder from this repository should ensure the user has all 
-necessary files. Once RESOURCE_FILES is placed in a convenient directory, invoking the `-d` 
+Cloning this repository should ensure the user has all necessary files, which are included in the RESOURCE_FILES folder. 
+Once RESOURCE_FILES is placed in a convenient directory, invoking the `-d` 
 flag to the directory as follows should allow the user to run the MARS program as intended:
 `-d my/resource/path/RESOURCE_FILES`
 
@@ -132,11 +144,13 @@ a specific reason to contradict the recommendations below.
 - **The default chromosomes:** If building a new GTF, these are the chromosomes that will be searched in the new GTF
   for immunoglobulin genes. To edit, simply add, subtract or replace the numbers in line 5 of the 
   USER_DEFAULTS file with the number of the chromosome(s) you want to include. Chromosome numbers should be 
-  space-separated integers only, with no additional characters.
-  
-  By default, chromosomes 2, 14, and 22 are listed in the file, as these are the chromosomes where human IG genes are found.
-  These are not the correct chromosomes for other animals, and should be changed before attempting to build an IG GTF 
-  for a different organism.
+  space-separated integers only, with no additional characters. Even if the base GTF designates chromosomes with the 
+  'chr1, chr2, etc.' convention, as opposed to the '1, 2, etc.' convention, only the numbers should be included. 
+The program is capable of handling either case as long as only the number is provided. 
+
+    By default, chromosomes 2, 14, and 22 are listed in the file, as these are the chromosomes where human IG genes are found.
+These are not the correct chromosomes for other animals, and should be changed before attempting to build an IG GTF 
+for a different organism.
   
 
 - **The default Immunoglobulin components:** If building a new GTF, these are the specific sub-type of IG gene that will
@@ -145,7 +159,7 @@ a specific reason to contradict the recommendations below.
   space-separated strings only, with no additional characters.
   
   By default, IG_V and IG_C are listed in the file, corresponding to genes for all IG variable and IG constant regions.
-  IG_J (joining) is excluded because it does little to help assess purity. These strings correspond to the naming 
+  IG_J (joining) and IG_D (diversity) are excluded because they do little to help assess purity. These strings correspond to the naming 
   convention in the source GTF, and are not guaranteed to be universal. Consequently, when building a new GTF, the user
   should check the gene biotype tag to ensure the naming convention has not changed.
   
