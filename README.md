@@ -83,6 +83,13 @@ contaminants, and graphs the output to provide an indication of sample purity.
 
    - `-t` An integer number of threads to use. Default is 1 thread. Corresponds to the `-t` flag as follows:
      `-t [INT]`, for example `-t 6`
+
+
+   - `-build_only` Invoke this flag to only build an IG GTF from a reference GTF and output into the output path, but not
+     use the GTF to analyze an alignment file. Must be used in tandem with the `-b` flag, as well as the `-g` flag and 
+     an input GTF. The `-i` flag must also be included with a dummy alignment file name, in order to satisfy the program's
+     error-checking functions (any string followed by `.bam` or `.sam` will work, even if no file with that name exists. We actually recommend using `dummy.bam`). It is recommended to use the `-n` flag in this mode to name the output GTF, since by default,
+     it will be given the name of the dummy alignment file. If `-k` is invoked with `-build_only`, then the CSV file used to generate the GTF will be kept in the output path.
    
 
 ### Outputs
@@ -189,6 +196,11 @@ name, resource directory, and output path, removing temporary files:**
 
 `/path/to/python/script/main.py -i /path/to/input/BAMfile.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d 
 /my/resource/path -n my_sample_name`
+
+**To build a reference GTF only, without keeping temporary files, assigning it a specific name:**
+
+`/path/to/python/script/main.py -i dummy.bam -g /path/to/input/GTFfile.gtf -b -o /my/output/path -d 
+/my/resource/path -n name_of_new_gtf -build_only`
 
 **To use the default GTF on a BAM, specifying name and output path:**
 
